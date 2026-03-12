@@ -1,0 +1,1488 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>OB - बस ट्रैकर</title>
+    
+    <!-- PWA Configuration -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#FF9F1A">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Hind:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #FF9F1A;
+            --background: #F8F9FA;
+            --surface: #FFFFFF;
+            --surface2: #F1F5F9;
+            --border: #E2E8F0;
+            --text: #0F172A;
+            --text-secondary: #475569;
+            --text-muted: #94A3B8;
+            --success: #22C55E;
+            --warning: #F59E0B;
+            --error: #EF4444;
+            --hero-start: #FFF7ED;
+            --hero-end: #F8F9FA;
+            --card-shadow: 0 4px 6px -1px rgba(0,0,0,0.1),0 2px 4px -1px rgba(0,0,0,0.06);
+            --font-family: 'Inter', 'Hind', sans-serif;
+        }
+
+        .dark-theme {
+            --primary: #FF9F1A;
+            --background: #09090B;
+            --surface: #0D0D10;
+            --surface2: #151517;
+            --border: #242429;
+            --text: #FAFAFA;
+            --text-secondary: #9CA3AF;
+            --text-muted: #4B5563;
+            --success: #22C55E;
+            --warning: #F59E0B;
+            --error: #EF4444;
+            --hero-start: #1A0E00;
+            --hero-end: #09090B;
+            --card-shadow: 0 4px 6px -1px rgba(0,0,0,0.3),0 2px 4px -1px rgba(0,0,0,0.2);
+        }
+
+        body {
+            font-family: var(--font-family);
+            background: var(--background);
+            color: var(--text);
+            transition: background-color 0.3s, color 0.3s;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+        }
+
+        #root {
+            max-width: 450px;
+            width: 100%;
+            min-height: 100vh;
+            background: var(--background);
+            position: relative;
+        }
+
+        .app-container {
+            min-height: 100vh;
+            padding-bottom: 80px;
+            background: var(--background);
+        }
+
+        /* Hero Section */
+        .hero-section {
+            background: linear-gradient(135deg, var(--hero-start), var(--hero-end));
+            padding: 60px 20px 40px;
+            border-bottom-left-radius: 30px;
+            border-bottom-right-radius: 30px;
+            position: relative;
+        }
+
+        .hero-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .badge {
+            background: rgba(255, 159, 26, 0.1);
+            border: 1px solid rgba(255, 159, 26, 0.3);
+            border-radius: 30px;
+            padding: 6px 16px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .badge-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--primary);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        .badge-text {
+            color: var(--primary);
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .theme-toggle {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .theme-toggle i {
+            color: var(--primary);
+            font-size: 20px;
+        }
+
+        .logo {
+            font-size: 48px;
+            font-weight: 800;
+            color: var(--primary);
+            letter-spacing: -2px;
+            line-height: 1;
+            margin-bottom: 10px;
+        }
+
+        .hero-title {
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--text);
+            line-height: 1.2;
+        }
+
+        .hero-title .highlight {
+            color: var(--primary);
+        }
+
+        /* Search Card */
+        .search-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 24px;
+            margin: -30px 20px 20px;
+            box-shadow: var(--card-shadow);
+            position: relative;
+            z-index: 10;
+        }
+
+        .search-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .search-header i {
+            color: var(--primary);
+            font-size: 18px;
+        }
+
+        .search-header h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .station-row {
+            background: var(--background);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .station-row:hover {
+            border-color: var(--primary);
+        }
+
+        .station-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .station-dot.start {
+            background: var(--primary);
+            border: 2px solid rgba(255, 159, 26, 0.3);
+        }
+
+        .station-dot.end {
+            background: var(--text-muted);
+            border-radius: 2px;
+        }
+
+        .station-text {
+            flex: 1;
+            font-size: 15px;
+            color: var(--text);
+        }
+
+        .station-text.placeholder {
+            color: var(--text-muted);
+        }
+
+        .divider-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 8px 0;
+        }
+
+        .divider {
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        .swap-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(255, 159, 26, 0.1);
+            border: 1px solid rgba(255, 159, 26, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .swap-btn i {
+            color: var(--primary);
+            font-size: 18px;
+        }
+
+        .swap-btn:hover {
+            transform: rotate(180deg);
+        }
+
+        .search-btn {
+            background: linear-gradient(135deg, #FF9F1A, #E8860D);
+            border: none;
+            border-radius: 16px;
+            padding: 16px;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            cursor: pointer;
+            margin-top: 8px;
+            transition: all 0.3s;
+            color: #09090B;
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        .search-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(255, 159, 26, 0.3);
+        }
+
+        /* Suggestions Dropdown */
+        .suggestions-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            margin-top: 4px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 100;
+            display: none;
+        }
+
+        .suggestions-dropdown.show {
+            display: block;
+        }
+
+        .suggestion-item {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border);
+            cursor: pointer;
+            transition: background 0.2s;
+            color: var(--text);
+        }
+
+        .suggestion-item:hover {
+            background: var(--surface2);
+        }
+
+        /* Bus Search Card */
+        .bus-search-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 20px;
+            margin: 16px 20px;
+            box-shadow: var(--card-shadow);
+        }
+
+        .bus-search-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .bus-search-header i {
+            color: var(--primary);
+        }
+
+        .bus-search-header h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .bus-search-input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            background: var(--background);
+            color: var(--text);
+            font-size: 15px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .bus-search-input:focus {
+            border-color: var(--primary);
+        }
+
+        .bus-search-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .bus-search-btn {
+            background: linear-gradient(135deg, #FF9F1A, #E8860D);
+            border: none;
+            border-radius: 16px;
+            padding: 14px;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            cursor: pointer;
+            margin-top: 12px;
+            transition: all 0.3s;
+            color: #09090B;
+            font-weight: 600;
+            font-size: 15px;
+        }
+
+        .bus-search-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 159, 26, 0.3);
+        }
+
+        /* Bus Card */
+        .bus-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 16px;
+            margin: 0 20px 12px;
+            box-shadow: var(--card-shadow);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .bus-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--primary);
+        }
+
+        .bus-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .bus-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .bus-badge {
+            background: rgba(255, 159, 26, 0.1);
+            border: 1px solid rgba(255, 159, 26, 0.3);
+            border-radius: 8px;
+            padding: 4px 8px;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .bus-info h4 {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .bus-info .bus-number {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .bus-fare {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .route-row {
+            background: var(--surface2);
+            border-radius: 12px;
+            padding: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 12px 0;
+        }
+
+        .route-station {
+            flex: 1;
+            text-align: center;
+        }
+
+        .route-station .station-name {
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--text);
+        }
+
+        .route-station .station-sub {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .route-icon {
+            color: var(--primary);
+        }
+
+        .bus-details {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin: 12px 0;
+        }
+
+        .detail-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--text-secondary);
+            font-size: 13px;
+        }
+
+        .detail-item i {
+            color: var(--primary);
+            font-size: 14px;
+        }
+
+        .trips-list {
+            margin-top: 12px;
+        }
+
+        .trip-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-top: 1px solid var(--border);
+            cursor: pointer;
+        }
+
+        .trip-item:hover {
+            background: var(--surface2);
+        }
+
+        .trip-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .trip-time {
+            font-weight: 600;
+            color: var(--text);
+            font-size: 14px;
+        }
+
+        .trip-type {
+            color: var(--text-secondary);
+            font-size: 12px;
+        }
+
+        .trip-status {
+            font-size: 11px;
+            padding: 4px 8px;
+            border-radius: 20px;
+        }
+
+        .status-live {
+            background: rgba(34, 197, 94, 0.1);
+            color: var(--success);
+        }
+
+        .status-upcoming {
+            background: rgba(255, 159, 26, 0.1);
+            color: var(--primary);
+        }
+
+        .status-departed {
+            background: rgba(100, 116, 139, 0.1);
+            color: var(--text-secondary);
+        }
+
+        .status-delayed {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--error);
+        }
+
+        /* Progress bar */
+        .progress-bar {
+            height: 6px;
+            background: var(--border);
+            border-radius: 3px;
+            overflow: hidden;
+            margin: 8px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--success);
+            border-radius: 3px;
+            width: 0%;
+        }
+
+        .progress-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .progress-label {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-muted);
+        }
+
+        .empty-state i {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        .empty-state p {
+            font-size: 16px;
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            max-width: 450px;
+            width: 100%;
+            background: var(--surface);
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 0;
+            backdrop-filter: blur(10px);
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: var(--text-muted);
+            font-size: 12px;
+            cursor: pointer;
+            transition: color 0.3s;
+            text-decoration: none;
+            padding: 4px 0;
+            width: 25%;
+        }
+
+        .nav-item i {
+            font-size: 20px;
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+            border-bottom: 2px solid var(--primary);
+            margin-bottom: -2px;
+        }
+
+        /* Install Prompt */
+        .install-prompt {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            max-width: 400px;
+            width: calc(100% - 40px);
+            background: var(--primary);
+            color: #09090B;
+            border-radius: 60px;
+            padding: 12px 20px;
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 8px 20px rgba(255, 159, 26, 0.4);
+            z-index: 1000;
+        }
+
+        .install-prompt span {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .install-btn {
+            background: #09090B;
+            color: white;
+            border: none;
+            border-radius: 40px;
+            padding: 8px 24px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.3s;
+        }
+
+        .install-btn:hover {
+            opacity: 0.9;
+        }
+
+        /* Picker Modal */
+        .picker-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .picker-modal.show {
+            display: flex;
+        }
+
+        .picker-content {
+            background: var(--surface);
+            border-radius: 24px;
+            width: 90%;
+            max-width: 400px;
+            max-height: 80vh;
+            overflow-y: auto;
+            border: 1px solid var(--border);
+        }
+
+        .picker-header {
+            padding: 16px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .picker-header h4 {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .picker-close {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--surface2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .picker-list {
+            padding: 8px;
+        }
+
+        .picker-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            border-bottom: 1px solid var(--border);
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .picker-item:hover {
+            background: var(--surface2);
+        }
+
+        .picker-item i {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .picker-item span {
+            flex: 1;
+            color: var(--text);
+            font-size: 14px;
+        }
+
+        .picker-item .check {
+            color: var(--primary);
+            display: none;
+        }
+
+        .picker-item.selected .check {
+            display: block;
+        }
+
+        /* Page Container */
+        #pageContainer {
+            min-height: calc(100vh - 80px);
+        }
+    </style>
+</head>
+<body>
+    <div id="root">
+        <div class="app-container">
+            <!-- Install Prompt -->
+            <div class="install-prompt" id="installPrompt">
+                <span>📲 OB ऐप इंस्टॉल करें</span>
+                <button class="install-btn" id="installBtn">इंस्टॉल करें</button>
+            </div>
+
+            <!-- स्टेशन पिकर मोडल -->
+            <div class="picker-modal" id="pickerModal">
+                <div class="picker-content">
+                    <div class="picker-header">
+                        <h4 id="pickerTitle">स्टेशन चुनें</h4>
+                        <div class="picker-close" id="closePicker">
+                            <i class="fas fa-times"></i>
+                        </div>
+                    </div>
+                    <div class="picker-list" id="pickerList"></div>
+                </div>
+            </div>
+
+            <!-- पेज कंटेनर -->
+            <div id="pageContainer"></div>
+
+            <!-- नीचे नेविगेशन -->
+            <div class="bottom-nav">
+                <div class="nav-item active" data-page="home">
+                    <i class="fas fa-home"></i>
+                    <span>होम</span>
+                </div>
+                <div class="nav-item" data-page="buses">
+                    <i class="fas fa-bus"></i>
+                    <span>बसें</span>
+                </div>
+                <div class="nav-item" data-page="favorites">
+                    <i class="fas fa-heart"></i>
+                    <span>पसंदीदा</span>
+                </div>
+                <div class="nav-item" data-page="routes">
+                    <i class="fas fa-route"></i>
+                    <span>रूट</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==================== FIREBASE CONFIG ====================
+        const firebaseConfig = {
+            apiKey: "AIzaSyDc5rsbsKl1c-uYySOFDRkqIqGr9LoOIMI",
+            authDomain: "new-bus-treking.firebaseapp.com",
+            databaseURL: "https://new-bus-treking-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "new-bus-treking",
+            storageBucket: "new-bus-treking.firebasestorage.app",
+            messagingSenderId: "1044937747406",
+            appId: "1:1044937747406:web:da9b5237f52acc979cd99f"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        // ==================== ग्लोबल वेरिएबल्स ====================
+        let stations = {};
+        let routes = {};
+        let buses = {};
+        let favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+        let currentPage = 'home';
+        let fromId = 'barmer_stand';
+        let toId = 'chouhtan_stand';
+        let pickerMode = 'from';
+        let allStationsList = [];
+
+        // ==================== थीम टॉगल ====================
+        let isDark = localStorage.getItem('theme') === 'dark';
+        if (isDark) document.body.classList.add('dark-theme');
+
+        // ==================== PWA इंस्टॉल ====================
+        let deferredPrompt;
+        const installPrompt = document.getElementById('installPrompt');
+        const installBtn = document.getElementById('installBtn');
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            installPrompt.style.display = 'flex';
+        });
+        installBtn.addEventListener('click', async () => {
+            if (!deferredPrompt) return;
+            deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
+            if (outcome === 'accepted') console.log('✅ इंस्टॉल किया');
+            deferredPrompt = null;
+            installPrompt.style.display = 'none';
+        });
+        window.addEventListener('appinstalled', () => {
+            installPrompt.style.display = 'none';
+        });
+
+        // ==================== कॉमन फंक्शन ====================
+        function getStationName(id) {
+            return stations[id]?.name || id;
+        }
+
+        function parseTime(t) {
+            const [h, m] = t.split(':').map(Number);
+            return h * 60 + (m || 0);
+        }
+
+        function getTripStatus(trip) {
+            const now = new Date();
+            const current = now.getHours() * 60 + now.getMinutes();
+            const dep = parseTime(trip.departure) + (trip.delay || 0);
+            const arr = parseTime(trip.arrival) + (trip.delay || 0);
+            if (current < dep) return { status: 'upcoming', text: 'आने वाली', class: 'status-upcoming', order: 2 };
+            if (current > arr) return { status: 'departed', text: 'समाप्त', class: 'status-departed', order: 3 };
+            return { status: 'live', text: 'चल रही', class: 'status-live', order: 1 };
+        }
+
+        function getLiveProgress(trip) {
+            const now = new Date();
+            const current = now.getHours() * 60 + now.getMinutes();
+            const dep = parseTime(trip.departure) + (trip.delay || 0);
+            const arr = parseTime(trip.arrival) + (trip.delay || 0);
+            if (current < dep) return 0;
+            if (current > arr) return 100;
+            return Math.min(100, Math.max(0, ((current - dep) / (arr - dep)) * 100));
+        }
+
+        function getCurrentLocation(trip, route) {
+            if (!route) return 'रूट डेटा नहीं';
+            const now = new Date();
+            const current = now.getHours() * 60 + now.getMinutes();
+            const dep = parseTime(trip.departure) + (trip.delay || 0);
+            const arr = parseTime(trip.arrival) + (trip.delay || 0);
+            if (current < dep) return 'अभी रवाना नहीं हुई';
+            if (current > arr) return 'गंतव्य पर पहुँच चुकी';
+            const stops = route.stops;
+            const travelTime = arr - dep;
+            const elapsed = current - dep;
+            const fraction = elapsed / travelTime;
+            const totalStops = stops.length;
+            const stopIndex = Math.floor(fraction * (totalStops - 1));
+            if (stopIndex >= totalStops - 1) return getStationName(stops[totalStops-1].stationId);
+            const fromStop = getStationName(stops[stopIndex].stationId);
+            const toStop = getStationName(stops[stopIndex+1].stationId);
+            return `${fromStop} और ${toStop} के बीच`;
+        }
+
+        // ==================== पसंदीदा फंक्शन ====================
+        function toggleFavorite(busId) {
+            const idx = favorites.indexOf(busId);
+            if (idx === -1) favorites.push(busId);
+            else favorites.splice(idx, 1);
+            localStorage.setItem('favorites', JSON.stringify(favorites));
+            if (currentPage === 'favorites') renderFavorites();
+        }
+
+        function isFavorite(busId) {
+            return favorites.includes(busId);
+        }
+
+        // ==================== स्टेशन पिकर ====================
+        const pickerModal = document.getElementById('pickerModal');
+        const pickerList = document.getElementById('pickerList');
+        const pickerTitle = document.getElementById('pickerTitle');
+        const closePicker = document.getElementById('closePicker');
+
+        function renderPickerList() {
+            pickerList.innerHTML = '';
+            allStationsList.forEach(({ id, name }) => {
+                const item = document.createElement('div');
+                item.className = `picker-item ${(pickerMode === 'from' ? fromId : toId) === id ? 'selected' : ''}`;
+                item.innerHTML = `<i class="fas fa-map-marker-alt"></i><span>${name}</span><i class="fas fa-check check"></i>`;
+                item.addEventListener('click', () => {
+                    if (pickerMode === 'from') fromId = id;
+                    else toId = id;
+                    updateStationTexts();
+                    pickerModal.classList.remove('show');
+                });
+                pickerList.appendChild(item);
+            });
+        }
+
+        closePicker.addEventListener('click', () => pickerModal.classList.remove('show'));
+        pickerModal.addEventListener('click', (e) => {
+            if (e.target === pickerModal) pickerModal.classList.remove('show');
+        });
+
+        // ==================== रेंडर बस कार्ड ====================
+        function renderBusCard(id, bus, showFavoriteIcon = true) {
+            const fromName = getStationName(bus.fromStation);
+            const toName = getStationName(bus.toStation);
+            const route = routes[bus.routeId];
+            const favIcon = showFavoriteIcon ? 
+                `<i class="${isFavorite(id) ? 'fas' : 'far'} fa-heart" style="color: #EF4444; font-size: 18px; cursor: pointer;" onclick="event.stopPropagation(); toggleFavorite('${id}')"></i>` : '';
+            
+            let tripsHtml = '';
+            if (bus.trips && bus.trips.length) {
+                tripsHtml = bus.trips.slice(0, 2).map(trip => {
+                    const status = getTripStatus(trip);
+                    return `
+                        <div class="trip-item" onclick="event.stopPropagation(); showBusDetail('${id}', '${trip.id}')">
+                            <div class="trip-info">
+                                <span class="trip-time">${trip.departure} → ${trip.arrival}</span>
+                                <span class="trip-type">${trip.direction === 'forward' ? 'जाने वाली' : 'वापसी'}</span>
+                            </div>
+                            <span class="trip-status ${status.class}">${status.text}</span>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            return `
+                <div class="bus-card" onclick="showBusDetail('${id}')">
+                    <div class="bus-header">
+                        <div class="bus-left">
+                            <div class="bus-badge">${bus.busCode || 'PVT'}</div>
+                            <div class="bus-info">
+                                <h4>${bus.busName}</h4>
+                                <div class="bus-number">${bus.busNumber}</div>
+                            </div>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <div class="bus-fare">${bus.fare}</div>
+                            ${favIcon}
+                        </div>
+                    </div>
+
+                    <div class="route-row">
+                        <div class="route-station">
+                            <div class="station-name">${fromName.split(' ')[0]}</div>
+                            <div class="station-sub">${fromName}</div>
+                        </div>
+                        <div class="route-icon"><i class="fas fa-arrow-right"></i></div>
+                        <div class="route-station">
+                            <div class="station-name">${toName.split(' ')[0]}</div>
+                            <div class="station-sub">${toName}</div>
+                        </div>
+                    </div>
+
+                    <div class="bus-details">
+                        <div class="detail-item"><i class="fas fa-chair"></i> ${bus.availableSeats || 0}/${bus.totalSeats || 0}</div>
+                        <div class="detail-item"><i class="fas fa-road"></i> ${route?.totalDistance || '60 किमी'}</div>
+                        <div class="detail-item" style="color: ${bus.crowd === 'कम' ? 'var(--success)' : bus.crowd === 'मध्यम' ? 'var(--warning)' : 'var(--error)'}">
+                            <i class="fas fa-users"></i> ${bus.crowd}
+                        </div>
+                    </div>
+
+                    ${tripsHtml}
+                </div>
+            `;
+        }
+
+        // ==================== सर्च फंक्शन ====================
+        function searchBuses(from, to) {
+            const results = [];
+            Object.entries(buses).forEach(([id, bus]) => {
+                const route = routes[bus.routeId];
+                if (!route) return;
+                const stops = route.stops.map(s => s.stationId);
+                const fromIdx = stops.indexOf(from);
+                const toIdx = stops.indexOf(to);
+                if (fromIdx !== -1 && toIdx !== -1) {
+                    if (fromIdx < toIdx) {
+                        results.push([id, bus]);
+                    } else if (fromIdx > toIdx && bus.trips.some(t => t.isReturnTrip)) {
+                        results.push([id, bus]);
+                    }
+                }
+            });
+            return results;
+        }
+
+        function searchBusesByNameOrNumber(term) {
+            const t = term.toLowerCase();
+            return Object.entries(buses).filter(([_, bus]) => 
+                bus.busName?.toLowerCase().includes(t) || bus.busNumber?.toLowerCase().includes(t)
+            );
+        }
+
+        function sortBusesByTime(busesArray) {
+            return busesArray.sort((a, b) => {
+                const aTrips = a[1].trips || [];
+                const bTrips = b[1].trips || [];
+                const aMinOrder = Math.min(...aTrips.map(t => getTripStatus(t).order));
+                const bMinOrder = Math.min(...bTrips.map(t => getTripStatus(t).order));
+                return aMinOrder - bMinOrder;
+            });
+        }
+
+        // ==================== होम पेज ====================
+        function renderHome() {
+            const container = document.getElementById('pageContainer');
+            container.innerHTML = `
+                <div class="hero-section">
+                    <div class="hero-top">
+                        <div class="badge">
+                            <span class="badge-dot"></span>
+                            <span class="badge-text">100% सटीक लाइव ट्रैकिंग</span>
+                        </div>
+                        <div class="theme-toggle" id="themeToggle">
+                            <i class="fas ${isDark ? 'fa-sun' : 'fa-moon'}"></i>
+                        </div>
+                    </div>
+
+                    <div class="logo">OB</div>
+
+                    <div class="hero-title">
+                        आपकी यात्रा, <span class="highlight">हमारी जिम्मेदारी</span>
+                    </div>
+                </div>
+
+                <div class="search-card">
+                    <div class="search-header">
+                        <i class="fas fa-route"></i>
+                        <h3>रूट खोजें</h3>
+                    </div>
+
+                    <div class="station-row" id="fromStation">
+                        <div class="station-dot start"></div>
+                        <span class="station-text" id="fromText">${getStationName(fromId)}</span>
+                        <i class="fas fa-chevron-down" style="color: var(--text-muted);"></i>
+                    </div>
+
+                    <div class="divider-row">
+                        <div class="divider"></div>
+                        <div class="swap-btn" id="swapBtn">
+                            <i class="fas fa-exchange-alt"></i>
+                        </div>
+                        <div class="divider"></div>
+                    </div>
+
+                    <div class="station-row" id="toStation">
+                        <div class="station-dot end"></div>
+                        <span class="station-text" id="toText">${getStationName(toId)}</span>
+                        <i class="fas fa-chevron-down" style="color: var(--text-muted);"></i>
+                    </div>
+
+                    <button class="search-btn" id="homeSearchBtn">
+                        <i class="fas fa-search"></i>
+                        बसें खोजें
+                    </button>
+                </div>
+            `;
+
+            document.getElementById('themeToggle').addEventListener('click', () => {
+                isDark = !isDark;
+                document.body.classList.toggle('dark-theme', isDark);
+                document.getElementById('themeToggle').innerHTML = `<i class="fas ${isDark ? 'fa-sun' : 'fa-moon'}"></i>`;
+                localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            });
+
+            document.getElementById('fromStation').addEventListener('click', () => {
+                pickerMode = 'from';
+                pickerTitle.textContent = 'कहाँ से?';
+                renderPickerList();
+                pickerModal.classList.add('show');
+            });
+
+            document.getElementById('toStation').addEventListener('click', () => {
+                pickerMode = 'to';
+                pickerTitle.textContent = 'कहाँ तक?';
+                renderPickerList();
+                pickerModal.classList.add('show');
+            });
+
+            document.getElementById('swapBtn').addEventListener('click', () => {
+                const temp = fromId;
+                fromId = toId;
+                toId = temp;
+                document.getElementById('fromText').textContent = getStationName(fromId);
+                document.getElementById('toText').textContent = getStationName(toId);
+            });
+
+            document.getElementById('homeSearchBtn').addEventListener('click', () => {
+                const results = searchBuses(fromId, toId);
+                const sorted = sortBusesByTime(results);
+                renderBusResults(fromId, toId, sorted);
+                currentPage = 'busResults';
+            });
+        }
+
+        function updateStationTexts() {
+            const fromEl = document.getElementById('fromText');
+            const toEl = document.getElementById('toText');
+            if (fromEl) fromEl.textContent = getStationName(fromId);
+            if (toEl) toEl.textContent = getStationName(toId);
+        }
+
+        // ==================== बसें पेज ====================
+        function renderBusesPage(initialResults = null) {
+            const container = document.getElementById('pageContainer');
+            container.innerHTML = `
+                <div class="bus-search-card">
+                    <div class="bus-search-header">
+                        <i class="fas fa-bus"></i>
+                        <h3>बस खोजें</h3>
+                    </div>
+                    <input type="text" class="bus-search-input" id="busSearchInput" placeholder="बस नाम या नंबर...">
+                    <div class="suggestions-dropdown" id="busSuggestions"></div>
+                    <button class="bus-search-btn" id="busSearchBtn">
+                        <i class="fas fa-search"></i> सर्च करें
+                    </button>
+                </div>
+                <div id="busesContainer"></div>
+            `;
+
+            const busesContainer = document.getElementById('busesContainer');
+
+            if (initialResults && initialResults.length > 0) {
+                busesContainer.innerHTML = initialResults.map(([id, bus]) => renderBusCard(id, bus)).join('');
+            } else {
+                busesContainer.innerHTML = '<div class="empty-state"><i class="fas fa-bus"></i><p>बसें खोजने के लिए ऊपर सर्च करें</p></div>';
+            }
+
+            document.getElementById('busSearchBtn').addEventListener('click', () => {
+                const term = document.getElementById('busSearchInput').value.trim();
+                if (!term) {
+                    busesContainer.innerHTML = '<div class="empty-state"><i class="fas fa-bus"></i><p>बसें खोजने के लिए ऊपर सर्च करें</p></div>';
+                    return;
+                }
+                const results = searchBusesByNameOrNumber(term);
+                busesContainer.innerHTML = results.map(([id, bus]) => renderBusCard(id, bus)).join('');
+            });
+
+            document.getElementById('busSearchInput').addEventListener('keyup', (e) => {
+                if (e.key === 'Enter') document.getElementById('busSearchBtn').click();
+            });
+        }
+
+        // ==================== पसंदीदा पेज ====================
+        function renderFavorites() {
+            const container = document.getElementById('pageContainer');
+            const favBuses = Object.entries(buses).filter(([id]) => isFavorite(id));
+            
+            if (favBuses.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-heart"></i>
+                        <p>कोई पसंदीदा बस नहीं</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = `
+                <div style="padding: 20px;">
+                    <h3 style="color: var(--text); margin-bottom: 16px;">पसंदीदा बसें</h3>
+                </div>
+                <div id="favoritesList"></div>
+            `;
+
+            document.getElementById('favoritesList').innerHTML = favBuses.map(([id, bus]) => renderBusCard(id, bus)).join('');
+        }
+
+        // ==================== रूट पेज ====================
+        function renderRoutes() {
+            const container = document.getElementById('pageContainer');
+            
+            const routesList = Object.entries(routes).map(([id, route]) => `
+                <div class="bus-card" onclick="handleRouteClick('${route.fromStation}', '${route.toStation}')">
+                    <h4 style="color: var(--primary); margin-bottom: 8px;">${route.name}</h4>
+                    <div class="route-row">
+                        <div class="route-station">
+                            <div class="station-name">${getStationName(route.fromStation).split(' ')[0]}</div>
+                            <div class="station-sub">${getStationName(route.fromStation)}</div>
+                        </div>
+                        <div class="route-icon"><i class="fas fa-arrow-right"></i></div>
+                        <div class="route-station">
+                            <div class="station-name">${getStationName(route.toStation).split(' ')[0]}</div>
+                            <div class="station-sub">${getStationName(route.toStation)}</div>
+                        </div>
+                    </div>
+                    <div class="bus-details">
+                        <span>दूरी: ${route.totalDistance}</span>
+                        <span>समय: ${route.forwardTravelTime}</span>
+                    </div>
+                </div>
+            `).join('');
+
+            container.innerHTML = `
+                <div style="padding: 20px;">
+                    <h3 style="color: var(--text); margin-bottom: 16px;">सभी मार्ग</h3>
+                    ${routesList || '<div class="empty-state">कोई मार्ग नहीं</div>'}
+                </div>
+            `;
+        }
+
+        window.handleRouteClick = function(from, to) {
+            fromId = from;
+            toId = to;
+            const results = searchBuses(from, to);
+            const sorted = sortBusesByTime(results);
+            renderBusResults(from, to, sorted);
+            currentPage = 'busResults';
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        };
+
+        // ==================== बस विवरण ====================
+        window.showBusDetail = function(busId, tripId) {
+            const bus = buses[busId];
+            if (!bus) return;
+            const route = routes[bus.routeId];
+            
+            let tripsHtml = '';
+            if (bus.trips && bus.trips.length) {
+                tripsHtml = bus.trips.map(trip => {
+                    const status = getTripStatus(trip);
+                    const progress = getLiveProgress(trip);
+                    const location = getCurrentLocation(trip, route);
+                    const isSelected = trip.id === tripId;
+                    return `
+                        <div class="bus-card" style="margin: 0 0 12px; cursor: pointer;" onclick="showBusDetail('${busId}', '${trip.id}')">
+                            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+                                <span style="background: ${trip.direction === 'forward' ? 'rgba(255,159,26,0.1)' : 'rgba(59,130,246,0.1)'}; color: ${trip.direction === 'forward' ? 'var(--primary)' : '#3B82F6'}; padding: 4px 8px; border-radius: 6px; font-size: 12px;">
+                                    <i class="fas ${trip.direction === 'forward' ? 'fa-arrow-right' : 'fa-return'}"></i> ${trip.direction === 'forward' ? 'जाने वाली' : 'वापसी'}
+                                </span>
+                                ${trip.delay > 0 ? `<span style="background: rgba(239,68,68,0.1); color: var(--error); padding: 4px 8px; border-radius: 6px; font-size: 12px;"><i class="fas fa-exclamation-triangle"></i> ${trip.delay} मिनट देरी</span>` : ''}
+                            </div>
+                            <div style="display: flex; align-items: center; margin-bottom: 12px;">
+                                <div style="flex:1;"><div style="font-size:20px; font-weight:700;">${trip.departure}</div><div style="font-size:12px;">प्रस्थान</div></div>
+                                <div style="padding:0 16px;"><i class="fas fa-arrow-right" style="color:var(--text-muted);"></i></div>
+                                <div style="flex:1; text-align:right;"><div style="font-size:20px; font-weight:700;">${trip.arrival}</div><div style="font-size:12px;">आगमन</div></div>
+                            </div>
+                            <div class="progress-bar"><div class="progress-fill" style="width:${progress}%;"></div></div>
+                            <div class="progress-labels">
+                                <span class="progress-label">${Math.round(progress)}% पूरा</span>
+                                <span class="progress-label status-badge ${status.class}" style="padding:2px 8px;">${status.text}</span>
+                            </div>
+                            <div style="font-size:13px; color:var(--text-secondary); margin:8px 0;">
+                                <i class="fas fa-map-marker-alt" style="color:var(--primary); margin-right:4px;"></i> वर्तमान स्थिति: ${location}
+                            </div>
+                            ${isSelected && route ? `
+                                <div style="background:var(--surface2); border:1px solid var(--border); border-radius:12px; padding:12px; margin-top:8px;">
+                                    <p style="color:var(--text-muted); font-size:12px; margin-bottom:8px;">${trip.direction === 'forward' ? 'मार्ग' : 'वापसी मार्ग'}</p>
+                                    ${route.stops.map((stop, idx) => `
+                                        <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
+                                            <span style="width:8px; height:8px; border-radius:4px; background:${idx === 0 || idx === route.stops.length-1 ? 'var(--primary)' : 'var(--text-muted)'};"></span>
+                                            <span style="color:var(--text-secondary); font-size:12px;">${getStationName(stop.stationId)}</span>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            ` : ''}
+                            <div style="display: flex; gap: 8px; margin-top: 12px;">
+                                <div class="action-btn share-btn" style="width: 36px; height: 36px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; display: flex; align-items: center; justify-content: center;" onclick="event.stopPropagation(); shareBus('${busId}')"><i class="fas fa-share-alt"></i></div>
+                                <div class="action-btn ticket-btn" style="flex:1; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; display: flex; align-items: center; justify-content: center; padding: 8px;" onclick="event.stopPropagation(); alert('यह सुविधा जल्द ही उपलब्ध होगी।')"><i class="fas fa-ticket-alt"></i> टिकट बुक करें</div>
+                                <div class="action-btn track-btn" style="flex:1; background: linear-gradient(135deg, #FF9F1A, #E8860D); border: none; border-radius: 8px; display: flex; align-items: center; justify-content: center; padding: 8px;" onclick="event.stopPropagation(); alert('यह सुविधा जल्द ही उपलब्ध होगी।')"><i class="fas fa-map-marker-alt"></i> लाइव ट्रैक</div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            const container = document.getElementById('pageContainer');
+            container.innerHTML = `
+                <div style="padding:16px;">
+                    <button onclick="goBack()" style="background:none; border:none; color:var(--primary); margin-bottom:16px;"><i class="fas fa-arrow-left"></i> वापस</button>
+                    ${tripsHtml}
+                </div>
+            `;
+        };
+
+        window.shareBus = function(busId) {
+            const bus = buses[busId];
+            if (!bus) return;
+            const shareText = `🚌 बस: ${bus.busName} (${bus.busNumber})\nरूट: ${getStationName(bus.fromStation)} → ${getStationName(bus.toStation)}\nकिराया: ${bus.fare}\nOB ऐप पर देखें: ${window.location.href}`;
+            if (navigator.share) {
+                navigator.share({ title: 'OB बस ट्रैकर', text: shareText, url: window.location.href });
+            } else {
+                navigator.clipboard.writeText(shareText);
+                alert('जानकारी कॉपी हो गई!');
+            }
+        };
+
+        // ==================== बस रिजल्ट्स पेज ====================
+        function renderBusResults(fromId, toId, results) {
+            const container = document.getElementById('pageContainer');
+            const fromName = getStationName(fromId);
+            const toName = getStationName(toId);
+            
+            container.innerHTML = `
+                <div style="padding: 16px;">
+                    <button onclick="goBack()" style="background:none; border:none; color:var(--primary); margin-bottom:16px;">
+                        <i class="fas fa-arrow-left"></i> वापस
+                    </button>
+                    
+                    <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 16px; margin-bottom: 20px;">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <div style="flex: 1; text-align: center;">
+                                <div style="font-weight: 600; color: var(--primary);">${fromName.split(' ')[0]}</div>
+                                <div style="font-size: 12px; color: var(--text-muted);">${fromName}</div>
+                            </div>
+                            <i class="fas fa-arrow-right" style="color: var(--primary);"></i>
+                            <div style="flex: 1; text-align: center;">
+                                <div style="font-weight: 600; color: var(--primary);">${toName.split(' ')[0]}</div>
+                                <div style="font-size: 12px; color: var(--text-muted);">${toName}</div>
+                            </div>
+                        </div>
+                        <div style="text-align: center; margin-top: 8px;">
+                            <span style="background: var(--surface2); padding: 4px 12px; border-radius: 20px; font-size: 12px; color: var(--text-secondary);">
+                                ${results.length} बसें मिलीं
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div id="searchResultsContainer"></div>
+                </div>
+            `;
+
+            const resultsContainer = document.getElementById('searchResultsContainer');
+            
+            if (results.length === 0) {
+                resultsContainer.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-bus"></i>
+                        <p>कोई बस नहीं मिली</p>
+                        <p style="font-size: 14px;">इस रूट पर फिलहाल कोई बस उपलब्ध नहीं है।</p>
+                        <button onclick="goBack()" style="background: var(--primary); color: #09090B; border: none; border-radius: 12px; padding: 12px 24px; margin-top: 16px; font-weight: 600;">वापस जाएं</button>
+                    </div>
+                `;
+                return;
+            }
+
+            resultsContainer.innerHTML = results.map(([id, bus]) => renderBusCard(id, bus)).join('');
+        }
+
+        function renderSortedBusResults(fromId, toId) {
+            const results = searchBuses(fromId, toId);
+            const sorted = sortBusesByTime(results);
+            renderBusResults(fromId, toId, sorted);
+        }
+
+        // ==================== नेविगेशन ====================
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.preventDefault();
+                document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+                item.classList.add('active');
+                const page = item.dataset.page;
+                currentPage = page;
+                renderPage(page);
+            });
+        });
+
+        function renderPage(page) {
+            if (page === 'home') renderHome();
+            else if (page === 'buses') renderBusesPage();
+            else if (page === 'favorites') renderFavorites();
+            else if (page === 'routes') renderRoutes();
+            else if (page === 'busResults') {
+                // busResults पेज पहले से रेंडर हो चुका होगा
+                // कुछ नहीं करना
+            }
+        }
+
+        window.goBack = function() {
+            if (currentPage === 'busResults' || currentPage === 'busDetail') {
+                currentPage = 'home';
+                renderHome();
+                document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+                document.querySelector('[data-page="home"]').classList.add('active');
+            } else {
+                renderPage(currentPage);
+            }
+        };
+
+        // ==================== फायरबेस डेटा लोड ====================
+        function loadFirebaseData() {
+            Promise.all([
+                db.ref('stations').once('value'),
+                db.ref('routes').once('value'),
+                db.ref('buses').once('value')
+            ]).then(([stationsSnap, routesSnap, busesSnap]) => {
+                stations = stationsSnap.val() || {};
+                routes = routesSnap.val() || {};
+                buses = busesSnap.val() || {};
+                allStationsList = Object.entries(stations).map(([id, s]) => ({ id, name: s.name }));
+                renderHome();
+            }).catch(console.error);
+        }
+
+        // ==================== इनिशियलाइज़ ====================
+        loadFirebaseData();
+
+        // ग्लोबल में जोड़ें
+        window.renderBusResults = renderBusResults;
+        window.renderSortedBusResults = renderSortedBusResults;
+        window.updateStationTexts = updateStationTexts;
+    </script>
+</body>
+</html>

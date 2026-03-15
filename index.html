@@ -5,6 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
     <title>OB - बस ट्रैकर</title>
     
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-KCYBVZLHWZ"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-KCYBVZLHWZ');
+    </script>
+    
     <!-- PWA Configuration -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#FF9F1A">
@@ -14,7 +23,7 @@
     <!-- Fonts & Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Hind:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Hind:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <!-- Firebase SDK -->
@@ -308,108 +317,6 @@
             box-shadow: 0 8px 16px rgba(255, 159, 26, 0.3);
         }
 
-        /* Suggestions Dropdown */
-        .suggestions-dropdown {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            right: 0;
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            margin-top: 4px;
-            max-height: 200px;
-            overflow-y: auto;
-            z-index: 100;
-            display: none;
-        }
-
-        .suggestions-dropdown.show {
-            display: block;
-        }
-
-        .suggestion-item {
-            padding: 12px 16px;
-            border-bottom: 1px solid var(--border);
-            cursor: pointer;
-            transition: background 0.2s;
-            color: var(--text);
-        }
-
-        .suggestion-item:hover {
-            background: var(--surface2);
-        }
-
-        /* Bus Search Card */
-        .bus-search-card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            padding: 20px;
-            margin: 16px 20px;
-            box-shadow: var(--card-shadow);
-        }
-
-        .bus-search-header {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 12px;
-        }
-
-        .bus-search-header i {
-            color: var(--primary);
-        }
-
-        .bus-search-header h3 {
-            font-size: 16px;
-            font-weight: 600;
-            color: var(--text);
-        }
-
-        .bus-search-input {
-            width: 100%;
-            padding: 14px 16px;
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            background: var(--background);
-            color: var(--text);
-            font-size: 15px;
-            outline: none;
-            transition: border-color 0.3s;
-        }
-
-        .bus-search-input:focus {
-            border-color: var(--primary);
-        }
-
-        .bus-search-input::placeholder {
-            color: var(--text-muted);
-        }
-
-        .bus-search-btn {
-            background: linear-gradient(135deg, #FF9F1A, #E8860D);
-            border: none;
-            border-radius: 16px;
-            padding: 14px;
-            width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            cursor: pointer;
-            margin-top: 12px;
-            transition: all 0.3s;
-            color: #09090B;
-            font-weight: 600;
-            font-size: 15px;
-        }
-
-        .bus-search-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(255, 159, 26, 0.3);
-        }
-
         /* Bus Card */
         .bus-card {
             background: var(--surface);
@@ -517,10 +424,6 @@
             font-size: 14px;
         }
 
-        .trips-list {
-            margin-top: 12px;
-        }
-
         .trip-item {
             display: flex;
             align-items: center;
@@ -570,11 +473,6 @@
         .status-departed {
             background: rgba(100, 116, 139, 0.1);
             color: var(--text-secondary);
-        }
-
-        .status-delayed {
-            background: rgba(239, 68, 68, 0.1);
-            color: var(--error);
         }
 
         /* Progress bar */
@@ -932,11 +830,6 @@
             color: var(--text);
         }
 
-        /* Page Container */
-        #pageContainer {
-            min-height: calc(100vh - 80px);
-        }
-
         /* Action Buttons */
         .action-buttons {
             display: flex;
@@ -980,6 +873,250 @@
             font-size: 13px;
             color: #09090B;
         }
+
+        #pageContainer {
+            min-height: calc(100vh - 80px);
+        }
+
+        /* Bus Search Card */
+        .bus-search-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 20px;
+            margin: 20px;
+            box-shadow: var(--card-shadow);
+        }
+
+        .bus-search-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .bus-search-header i {
+            color: var(--primary);
+            font-size: 18px;
+        }
+
+        .bus-search-header h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .bus-search-input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            background: var(--background);
+            color: var(--text);
+            font-size: 15px;
+            outline: none;
+            margin-bottom: 12px;
+        }
+
+        .bus-search-input:focus {
+            border-color: var(--primary);
+        }
+
+        .bus-search-btn {
+            background: linear-gradient(135deg, #FF9F1A, #E8860D);
+            border: none;
+            border-radius: 16px;
+            padding: 14px;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: #09090B;
+            font-weight: 600;
+            font-size: 15px;
+        }
+
+        .bus-search-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(255, 159, 26, 0.3);
+        }
+
+        /* ==================== ऐप डाउनलोड पॉपअप स्टाइल ==================== */
+        .app-popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: flex-start;
+            z-index: 9999;
+            backdrop-filter: blur(5px);
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .app-popup {
+            background: linear-gradient(135deg, #FF9F1A, #E8860D);
+            max-width: 400px;
+            width: 90%;
+            margin-top: 20px;
+            border-radius: 30px;
+            padding: 25px;
+            position: relative;
+            color: #09090B;
+            box-shadow: 0 20px 40px rgba(255, 159, 26, 0.4);
+            animation: slideDown 0.4s ease;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .popup-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 32px;
+            height: 32px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: white;
+            font-size: 16px;
+        }
+        
+        .popup-close:hover {
+            background: rgba(0, 0, 0, 0.4);
+            transform: rotate(90deg);
+        }
+        
+        .popup-icon {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        
+        .popup-icon i {
+            font-size: 60px;
+            color: #09090B;
+            background: rgba(255, 255, 255, 0.3);
+            padding: 20px;
+            border-radius: 50%;
+            animation: busBounce 2s ease infinite;
+        }
+        
+        .popup-title {
+            font-size: 32px;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+            font-family: 'Inter', 'Hind', sans-serif;
+        }
+        
+        .popup-subtitle {
+            text-align: center;
+            font-size: 16px;
+            margin-bottom: 25px;
+            opacity: 0.9;
+            font-weight: 500;
+        }
+        
+        .popup-features {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 15px;
+            margin-bottom: 25px;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .feature-item i {
+            font-size: 16px;
+            color: #09090B;
+        }
+        
+        .download-btn {
+            background: #09090B;
+            color: white;
+            border: none;
+            border-radius: 60px;
+            padding: 18px 30px;
+            width: 100%;
+            font-size: 20px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .download-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            background: #000;
+        }
+        
+        .download-btn i {
+            font-size: 24px;
+            animation: pulse 1.5s ease infinite;
+        }
+        
+        .download-count {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 14px;
+            font-weight: 500;
+            color: rgba(9, 9, 11, 0.8);
+        }
+        
+        .never-show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 15px;
+            font-size: 13px;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: opacity 0.3s;
+        }
+        
+        .never-show:hover {
+            opacity: 1;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideDown {
+            from { transform: translateY(-100px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        @keyframes busBounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
     </style>
 </head>
 <body>
@@ -991,7 +1128,7 @@
                 <button class="install-btn" id="installBtn">इंस्टॉल करें</button>
             </div>
 
-            <!-- स्टेशन पिकर मोडल (अपडेटेड विथ सर्च) -->
+            <!-- स्टेशन पिकर मोडल -->
             <div class="modal" id="pickerModal">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -1016,31 +1153,8 @@
                             <i class="fas fa-times"></i>
                         </div>
                     </div>
-                    <div class="modal-body">
-                        <div class="settings-item" id="settingsNotifications">
-                            <i class="fas fa-bell"></i>
-                            <span class="settings-text">नोटिफिकेशन</span>
-                            <span class="settings-badge">जल्द आ रहा</span>
-                        </div>
-                        <div class="settings-item" id="settingsLanguage">
-                            <i class="fas fa-language"></i>
-                            <span class="settings-text">भाषा</span>
-                            <span class="settings-badge">हिन्दी</span>
-                        </div>
-                        <div class="settings-item" id="settingsAbout">
-                            <i class="fas fa-info-circle"></i>
-                            <span class="settings-text">ऐप के बारे में</span>
-                            <span class="settings-badge">v1.1.1</span>
-                        </div>
-                        <div class="settings-item" id="settingsPrivacy">
-                            <i class="fas fa-shield-alt"></i>
-                            <span class="settings-text">गोपनीयता नीति</span>
-                        </div>
-                        <div class="settings-item" id="settingsSupport">
-                            <i class="fas fa-envelope"></i>
-                            <span class="settings-text">सहायता</span>
-                            <span class="settings-badge">supportonbus@gmail.com</span>
-                        </div>
+                    <div class="modal-body" id="settingsBody">
+                        <!-- Settings items will be injected here dynamically -->
                     </div>
                 </div>
             </div>
@@ -1048,7 +1162,7 @@
             <!-- पेज कंटेनर -->
             <div id="pageContainer"></div>
 
-            <!-- नीचे नेविगेशन -->
+            <!-- नीचे नेविऔगेशन -->
             <div class="bottom-nav">
                 <div class="nav-item active" data-page="home">
                     <i class="fas fa-home"></i>
@@ -1066,6 +1180,70 @@
                     <i class="fas fa-route"></i>
                     <span>रूट</span>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ऐप डाउनलोड पॉपअप -->
+    <div class="app-popup-overlay" id="appPopup">
+        <div class="app-popup">
+            <div class="popup-close" onclick="closePopup()">
+                <i class="fas fa-times"></i>
+            </div>
+            
+            <div class="popup-icon">
+                <i class="fas fa-bus"></i>
+            </div>
+            
+            <div class="popup-title">
+                🚌 ON BUS
+            </div>
+            
+            <div class="popup-subtitle">
+                बस ट्रैकिंग ऐप अभी डाउनलोड करें
+            </div>
+            
+            <div class="popup-features">
+                <div class="feature-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>लाइव ट्रैकिंग</span>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-clock"></i>
+                    <span>सटीक समय</span>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-chair"></i>
+                    <span>सीट उपलब्धता</span>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-heart"></i>
+                    <span>पसंदीदा बसें</span>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-route"></i>
+                    <span>रूट खोज</span>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>100% सुरक्षित</span>
+                </div>
+            </div>
+            
+            <!-- डाउनलोड बटन -->
+            <button class="download-btn" onclick="downloadApp(true)">
+                <i class="fas fa-download"></i>
+                ऐप डाउनलोड करें
+                <span style="font-size: 14px; opacity: 0.8;">(APK)</span>
+            </button>
+            
+            <div class="download-count" id="downloadCount">
+                <i class="fas fa-users"></i> <span id="count">1,234</span>+ डाउनलोड
+            </div>
+            
+            <div class="never-show" onclick="neverShowAgain()">
+                <i class="far fa-check-circle"></i>
+                <span>फिर से न दिखाएं</span>
             </div>
         </div>
     </div>
@@ -1090,6 +1268,7 @@
         let buses = {};
         let favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
         let currentPage = 'home';
+        let previousPage = null;
         let fromId = 'barmer_stand';
         let toId = 'chouhtan_stand';
         let pickerMode = 'from';
@@ -1098,6 +1277,10 @@
         // ==================== थीम टॉगल ====================
         let isDark = localStorage.getItem('theme') === 'dark';
         if (isDark) document.body.classList.add('dark-theme');
+
+        // ==================== डाउनलोड स्टेटस ====================
+        let appDownloaded = localStorage.getItem('appDownloaded') === 'true';
+        let hidePopup = localStorage.getItem('hidePopup') === 'true';
 
         // ==================== PWA इंस्टॉल ====================
         let deferredPrompt;
@@ -1122,7 +1305,17 @@
 
         // ==================== कॉमन फंक्शन ====================
         function getStationName(id) {
-            return stations[id]?.name || id;
+            return stations[id]?.nameHindi || stations[id]?.name || id;
+        }
+
+        function getAllStationNames(id) {
+            const station = stations[id];
+            if (!station) return [id];
+            let names = [station.name, station.nameHindi];
+            if (station.suggestions && Array.isArray(station.suggestions)) {
+                names = [...names, ...station.suggestions];
+            }
+            return names.filter(n => n);
         }
 
         function parseTime(t) {
@@ -1153,7 +1346,6 @@
         function getStopsForTrip(trip, route) {
             if (!route || !route.stops) return [];
             let stops = route.stops;
-            // अगर ट्रिप वापसी की है तो स्टॉप्स उल्टे कर दो
             if (trip.direction !== 'forward') {
                 stops = [...stops].reverse();
             }
@@ -1188,14 +1380,13 @@
             else favorites.splice(idx, 1);
             localStorage.setItem('favorites', JSON.stringify(favorites));
             if (currentPage === 'favorites') renderFavorites();
-            // अगर बस कार्ड कहीं और दिख रहे हैं तो उनके आइकन भी अपडेट करने होंगे, लेकिन सरलता के लिए हम पेज री-रेंडर नहीं कर रहे
         }
 
         function isFavorite(busId) {
             return favorites.includes(busId);
         }
 
-        // ==================== स्टेशन पिकर (सर्च के साथ) ====================
+        // ==================== स्टेशन पिकर ====================
         const pickerModal = document.getElementById('pickerModal');
         const pickerList = document.getElementById('pickerList');
         const pickerTitle = document.getElementById('pickerTitle');
@@ -1203,14 +1394,18 @@
         const stationSearchInput = document.getElementById('stationSearchInput');
 
         function renderPickerList(filterText = '') {
-            const filtered = allStationsList.filter(s => 
-                s.name.toLowerCase().includes(filterText.toLowerCase())
-            );
+            const filtered = allStationsList.filter(s => {
+                const searchTerm = filterText.toLowerCase();
+                const allNames = getAllStationNames(s.id).map(n => n.toLowerCase());
+                return allNames.some(name => name.includes(searchTerm));
+            });
+            
             pickerList.innerHTML = '';
-            filtered.forEach(({ id, name }) => {
+            filtered.forEach(({ id }) => {
+                const displayName = getStationName(id);
                 const item = document.createElement('div');
                 item.className = `picker-item ${(pickerMode === 'from' ? fromId : toId) === id ? 'selected' : ''}`;
-                item.innerHTML = `<i class="fas fa-map-marker-alt"></i><span>${name}</span><i class="fas fa-check check"></i>`;
+                item.innerHTML = `<i class="fas fa-map-marker-alt"></i><span>${displayName}</span><i class="fas fa-check check"></i>`;
                 item.addEventListener('click', () => {
                     if (pickerMode === 'from') fromId = id;
                     else toId = id;
@@ -1233,13 +1428,70 @@
         // ==================== सेटिंग मोडल ====================
         const settingsModal = document.getElementById('settingsModal');
         const closeSettings = document.getElementById('closeSettings');
-        document.getElementById('settingsNotifications').addEventListener('click', () => alert('माफ़ करें यह सुविधा जल्द ही उपलब्ध होगी'));
-        document.getElementById('settingsLanguage').addEventListener('click', () => alert('भाषा विकल्प जल्द ही उपलब्ध होगा। अभी केवल हिन्दी उपलब्ध है।'));
-        document.getElementById('settingsAbout').addEventListener('click', () => alert('OB बस ट्रैकर\nवर्शन 1.1.1\n© 2025'));
-        document.getElementById('settingsPrivacy').addEventListener('click', () => alert('माफ़ करें यह सुविधा जल्द ही उपलब्ध होगी'));
-        document.getElementById('settingsSupport').addEventListener('click', () => {
-            window.location.href = 'mailto:supportonbus@gmail.com?subject=OB ऐप सहायता';
-        });
+        const settingsBody = document.getElementById('settingsBody');
+
+        function renderSettings() {
+            let downloadItemHtml = '';
+            if (appDownloaded) {
+                downloadItemHtml = `
+                    <div class="settings-item" style="opacity:0.7; cursor:default;">
+                        <i class="fas fa-check-circle" style="color:var(--success);"></i>
+                        <span class="settings-text">ऐप डाउनलोड हो चुका है</span>
+                        <span class="settings-badge">✅</span>
+                    </div>
+                `;
+            } else {
+                downloadItemHtml = `
+                    <div class="settings-item" id="settingsDownloadApp">
+                        <i class="fas fa-download"></i>
+                        <span class="settings-text">ऐप डाउनलोड करें</span>
+                        <span class="settings-badge">APK</span>
+                    </div>
+                `;
+            }
+
+            settingsBody.innerHTML = `
+                ${downloadItemHtml}
+                <div class="settings-item" id="settingsNotifications">
+                    <i class="fas fa-bell"></i>
+                    <span class="settings-text">नोटिफिकेशन</span>
+                    <span class="settings-badge">जल्द आ रहा</span>
+                </div>
+                <div class="settings-item" id="settingsLanguage">
+                    <i class="fas fa-language"></i>
+                    <span class="settings-text">भाषा</span>
+                    <span class="settings-badge">हिन्दी</span>
+                </div>
+                <div class="settings-item" id="settingsAbout">
+                    <i class="fas fa-info-circle"></i>
+                    <span class="settings-text">ऐप के बारे में</span>
+                    <span class="settings-badge">v1.2.0</span>
+                </div>
+                <div class="settings-item" id="settingsPrivacy">
+                    <i class="fas fa-shield-alt"></i>
+                    <span class="settings-text">गोपनीयता नीति</span>
+                </div>
+                <div class="settings-item" id="settingsSupport">
+                    <i class="fas fa-envelope"></i>
+                    <span class="settings-text">सहायता</span>
+                    <span class="settings-badge">supportonbus@gmail.com</span>
+                </div>
+            `;
+
+            // Attach event listeners
+            if (!appDownloaded) {
+                document.getElementById('settingsDownloadApp').addEventListener('click', () => {
+                    downloadApp(false);
+                });
+            }
+            document.getElementById('settingsNotifications').addEventListener('click', () => alert('माफ़ करें यह सुविधा जल्द ही उपलब्ध होगी'));
+            document.getElementById('settingsLanguage').addEventListener('click', () => alert('भाषा विकल्प जल्द ही उपलब्ध होगा। अभी केवल हिन्दी उपलब्ध है।'));
+            document.getElementById('settingsAbout').addEventListener('click', () => alert('OB बस ट्रैकर\nवर्शन 1.2.0\n© 2025'));
+            document.getElementById('settingsPrivacy').addEventListener('click', () => alert('माफ़ करें यह सुविधा जल्द ही उपलब्ध होगी'));
+            document.getElementById('settingsSupport').addEventListener('click', () => {
+                window.location.href = 'mailto:supportonbus@gmail.com?subject=OB ऐप सहायता';
+            });
+        }
 
         closeSettings.addEventListener('click', () => settingsModal.classList.remove('show'));
         settingsModal.addEventListener('click', (e) => {
@@ -1324,7 +1576,6 @@
                     if (fromIdx < toIdx) {
                         results.push([id, bus]);
                     } else if (fromIdx > toIdx && bus.trips.some(t => t.direction !== 'forward')) {
-                        // अगर वापसी ट्रिप है तो ही दिखाओ
                         results.push([id, bus]);
                     }
                 }
@@ -1349,7 +1600,7 @@
             });
         }
 
-        // ==================== होम पेज (अपडेटेड) ====================
+        // ==================== होम पेज ====================
         function renderHome() {
             const container = document.getElementById('pageContainer');
             container.innerHTML = `
@@ -1408,7 +1659,6 @@
                     </button>
                 </div>
 
-                <!-- सजेशन रूट -->
                 <div class="suggestions-section">
                     <div class="section-title">लोकप्रिय मार्ग</div>
                     <div class="suggestion-chips">
@@ -1421,7 +1671,6 @@
                     </div>
                 </div>
 
-                <!-- फीचर बॉक्स -->
                 <div class="features-grid">
                     <div class="feature-box" onclick="featureNotAvailable()">
                         <i class="fas fa-clock"></i>
@@ -1450,6 +1699,7 @@
             });
 
             document.getElementById('settingsToggle').addEventListener('click', () => {
+                renderSettings();
                 settingsModal.classList.add('show');
             });
 
@@ -1485,7 +1735,6 @@
             });
         }
 
-        // हैंडलर फॉर सजेशन रूट
         window.handleSuggestionRoute = function(from, to) {
             fromId = from;
             toId = to;
@@ -1517,7 +1766,6 @@
                         <h3>बस खोजें</h3>
                     </div>
                     <input type="text" class="bus-search-input" id="busSearchInput" placeholder="बस नाम या नंबर...">
-                    <div class="suggestions-dropdown" id="busSuggestions"></div>
                     <button class="bus-search-btn" id="busSearchBtn">
                         <i class="fas fa-search"></i> सर्च करें
                     </button>
@@ -1616,13 +1864,14 @@
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
         };
 
-        // ==================== बस विवरण (अपडेटेड) ====================
+        // ==================== बस विवरण ====================
         window.showBusDetail = function(busId, tripId) {
             const bus = buses[busId];
             if (!bus) return;
             const route = routes[bus.routeId];
             
-            // अगर tripId दिया है तो सिर्फ वही ट्रिप दिखाओ, वरना सारी ट्रिप्स बिना एक्शन बटन के
+            previousPage = currentPage;
+            
             if (tripId) {
                 const trip = bus.trips.find(t => t.id === tripId);
                 if (!trip) return;
@@ -1674,8 +1923,8 @@
                         </div>
                     </div>
                 `;
+                currentPage = 'busDetail';
             } else {
-                // सिर्फ ट्रिप्स की सूची दिखाओ, बिना एक्शन बटन के
                 let tripsHtml = '';
                 if (bus.trips && bus.trips.length) {
                     tripsHtml = bus.trips.map(trip => {
@@ -1711,6 +1960,7 @@
                         ${tripsHtml}
                     </div>
                 `;
+                currentPage = 'busDetail';
             }
         };
 
@@ -1778,12 +2028,6 @@
             resultsContainer.innerHTML = results.map(([id, bus]) => renderBusCard(id, bus)).join('');
         }
 
-        function renderSortedBusResults(fromId, toId) {
-            const results = searchBuses(fromId, toId);
-            const sorted = sortBusesByTime(results);
-            renderBusResults(fromId, toId, sorted);
-        }
-
         // ==================== नेविगेशन ====================
         document.querySelectorAll('.nav-item').forEach(item => {
             item.addEventListener('click', (e) => {
@@ -1791,6 +2035,7 @@
                 document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
                 item.classList.add('active');
                 const page = item.dataset.page;
+                previousPage = currentPage;
                 currentPage = page;
                 renderPage(page);
             });
@@ -1801,20 +2046,27 @@
             else if (page === 'buses') renderBusesPage();
             else if (page === 'favorites') renderFavorites();
             else if (page === 'routes') renderRoutes();
-            else if (page === 'busResults') {
-                // busResults पेज पहले से रेंडर हो चुका होगा
-                // कुछ नहीं करना
-            }
         }
 
         window.goBack = function() {
-            if (currentPage === 'busResults' || currentPage === 'busDetail') {
+            if (previousPage) {
+                const temp = currentPage;
+                currentPage = previousPage;
+                previousPage = temp;
+                renderPage(currentPage);
+                document.querySelectorAll('.nav-item').forEach(n => {
+                    if (n.dataset.page === currentPage) {
+                        n.classList.add('active');
+                    } else {
+                        n.classList.remove('active');
+                    }
+                });
+            } else {
                 currentPage = 'home';
+                previousPage = null;
                 renderHome();
                 document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
                 document.querySelector('[data-page="home"]').classList.add('active');
-            } else {
-                renderPage(currentPage);
             }
         };
 
@@ -1828,18 +2080,167 @@
                 stations = stationsSnap.val() || {};
                 routes = routesSnap.val() || {};
                 buses = busesSnap.val() || {};
-                allStationsList = Object.entries(stations).map(([id, s]) => ({ id, name: s.name }));
+                allStationsList = Object.entries(stations).map(([id, s]) => ({ 
+                    id, 
+                    name: s.name,
+                    nameHindi: s.nameHindi || s.name 
+                }));
                 renderHome();
+                // पॉपअप दिखाने की कोशिश करें (अगर डाउनलोड नहीं हुआ और हाइड नहीं किया गया)
+                tryShowPopup();
             }).catch(console.error);
         }
+
+        // ==================== ऐप डाउनलोड पॉपअप ====================
+        
+        // यहां आपकी GitHub रिलीज़ का लिंक
+        const APK_URL = 'https://github.com/onbustraking/On-bus-/releases/download/v1.0/app-release.1.apk';
+        
+        // डाउनलोड काउंट
+        let downloadCount = localStorage.getItem('downloadCount') ? 
+                           parseInt(localStorage.getItem('downloadCount')) : 1234;
+        
+        function tryShowPopup() {
+            // पॉपअप तभी दिखाएं जब डाउनलोड नहीं हुआ और हाइड नहीं किया गया
+            if (!appDownloaded && !hidePopup) {
+                document.getElementById('appPopup').style.display = 'flex';
+            }
+        }
+        
+        // वेबसाइट लोड होने के बाद पॉपअप दिखाने की कोशिश करें
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(() => {
+                tryShowPopup();
+                updateDownloadCount();
+            }, 2000);
+        });
+        
+        // पॉपअप बंद करें
+        window.closePopup = function() {
+            document.getElementById('appPopup').style.display = 'none';
+        };
+        
+        // ऐप डाउनलोड करें (fromPopup: true अगर पॉपअप से बुलाया गया)
+        window.downloadApp = function(fromPopup = false) {
+            downloadCount++;
+            localStorage.setItem('downloadCount', downloadCount);
+            updateDownloadCount();
+            
+            // डाउनलोड स्टेटस सेट करें
+            appDownloaded = true;
+            localStorage.setItem('appDownloaded', 'true');
+            
+            // Google Analytics ईवेंट भेजें
+            gtag('event', 'download', {
+                'event_category': 'app',
+                'event_label': 'on-bus-apk',
+                'value': downloadCount
+            });
+            
+            const link = document.createElement('a');
+            link.href = APK_URL;
+            link.download = 'on-bus-app.apk';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            // पॉपअप बंद करें
+            closePopup();
+            
+            // सेटिंग मोडल अपडेट करें (अगर खुला है)
+            if (settingsModal.classList.contains('show')) {
+                renderSettings();
+            }
+            
+            // बटन का टेक्स्ट बदलें (अगर पॉपअप से है)
+            if (fromPopup) {
+                const btn = event.currentTarget;
+                btn.innerHTML = '<i class="fas fa-check"></i> डाउनलोड शुरू!';
+                btn.style.background = '#22C55E';
+                setTimeout(() => {
+                    btn.innerHTML = '<i class="fas fa-download"></i> ऐप डाउनलोड करें <span style="font-size: 14px; opacity: 0.8;">(APK)</span>';
+                    btn.style.background = '#09090B';
+                }, 2000);
+            }
+        };
+        
+        // डाउनलोड काउंट अपडेट करें
+        function updateDownloadCount() {
+            const countElement = document.getElementById('count');
+            if (countElement) {
+                countElement.textContent = downloadCount.toLocaleString();
+            }
+        }
+        
+        // फिर से न दिखाएं
+        window.neverShowAgain = function() {
+            hidePopup = true;
+            localStorage.setItem('hidePopup', 'true');
+            closePopup();
+            
+            // Google Analytics ईवेंट भेजें
+            gtag('event', 'popup_closed', {
+                'event_category': 'app',
+                'event_label': 'never_show_again'
+            });
+            
+            showToast('आप इसे सेटिंग से फिर से चालू नहीं कर सकते');
+        };
+        
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.style.cssText = `
+                position: fixed;
+                bottom: 30px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: #09090B;
+                color: white;
+                padding: 12px 24px;
+                border-radius: 50px;
+                font-size: 14px;
+                z-index: 10000;
+                box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+                animation: fadeIn 0.3s ease;
+            `;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        }
+        
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closePopup();
+            }
+        });
+        
+        document.getElementById('appPopup').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closePopup();
+            }
+        });
 
         // ==================== इनिशियलाइज़ ====================
         loadFirebaseData();
 
         // ग्लोबल में जोड़ें
         window.renderBusResults = renderBusResults;
-        window.renderSortedBusResults = renderSortedBusResults;
         window.updateStationTexts = updateStationTexts;
     </script>
+
+    <!-- फॉलबैक डाउनलोड लिंक -->
+    <noscript>
+        <div style="position: fixed; bottom: 20px; left: 20px; right: 20px; background: #FF9F1A; color: #09090B; padding: 15px; border-radius: 60px; text-align: center; z-index: 9999;">
+            <a href="https://github.com/onbustraking/On-bus-/releases/download/v1.0/app-release.1.apk" 
+               target="_blank" 
+               rel="noopener noreferrer"
+               style="color: #09090B; text-decoration: none; font-weight: bold; display: block;">
+                <i class="fas fa-bus"></i> 📲 ON BUS ऐप डाउनलोड करें
+            </a>
+        </div>
+    </noscript>
 </body>
 </html>

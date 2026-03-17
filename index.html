@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>OB - बस ट्रैकर</title>
+    <title>Oh my bus - बस ट्रैकर</title>
     
     <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-KCYBVZLHWZ"></script>
@@ -112,6 +112,8 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 10px;
         }
 
         .hero-actions {
@@ -128,6 +130,8 @@
             display: inline-flex;
             align-items: center;
             gap: 6px;
+            width: 100%;
+            justify-content: center;
         }
 
         .badge-dot {
@@ -163,6 +167,34 @@
             transition: all 0.3s;
             color: var(--primary);
             font-size: 20px;
+        }
+
+        .download-header-btn {
+            background: linear-gradient(135deg, #FF9F1A, #E8860D);
+            border: none;
+            border-radius: 16px;
+            padding: 16px;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: #09090B;
+            font-weight: 700;
+            font-size: 16px;
+            border: 1px solid rgba(255,255,255,0.3);
+            margin-bottom: 20px;
+        }
+        
+        .download-header-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(255, 159, 26, 0.3);
+        }
+        
+        .download-header-btn i {
+            font-size: 18px;
         }
 
         .logo {
@@ -944,179 +976,6 @@
             box-shadow: 0 8px 16px rgba(255, 159, 26, 0.3);
         }
 
-        /* ==================== ऐप डाउनलोड पॉपअप स्टाइल ==================== */
-        .app-popup-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.7);
-            display: none;
-            justify-content: center;
-            align-items: flex-start;
-            z-index: 9999;
-            backdrop-filter: blur(5px);
-            animation: fadeIn 0.3s ease;
-        }
-        
-        .app-popup {
-            background: linear-gradient(135deg, #FF9F1A, #E8860D);
-            max-width: 400px;
-            width: 90%;
-            margin-top: 20px;
-            border-radius: 30px;
-            padding: 25px;
-            position: relative;
-            color: #09090B;
-            box-shadow: 0 20px 40px rgba(255, 159, 26, 0.4);
-            animation: slideDown 0.4s ease;
-            border: 2px solid rgba(255, 255, 255, 0.2);
-        }
-        
-        .popup-close {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            width: 32px;
-            height: 32px;
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s;
-            color: white;
-            font-size: 16px;
-        }
-        
-        .popup-close:hover {
-            background: rgba(0, 0, 0, 0.4);
-            transform: rotate(90deg);
-        }
-        
-        .popup-icon {
-            text-align: center;
-            margin-bottom: 15px;
-        }
-        
-        .popup-icon i {
-            font-size: 60px;
-            color: #09090B;
-            background: rgba(255, 255, 255, 0.3);
-            padding: 20px;
-            border-radius: 50%;
-            animation: busBounce 2s ease infinite;
-        }
-        
-        .popup-title {
-            font-size: 32px;
-            font-weight: 800;
-            text-align: center;
-            margin-bottom: 10px;
-            letter-spacing: 2px;
-            font-family: 'Inter', 'Hind', sans-serif;
-        }
-        
-        .popup-subtitle {
-            text-align: center;
-            font-size: 16px;
-            margin-bottom: 25px;
-            opacity: 0.9;
-            font-weight: 500;
-        }
-        
-        .popup-features {
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 20px;
-            padding: 15px;
-            margin-bottom: 25px;
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-        }
-        
-        .feature-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 14px;
-            font-weight: 500;
-        }
-        
-        .feature-item i {
-            font-size: 16px;
-            color: #09090B;
-        }
-        
-        .download-btn {
-            background: #09090B;
-            color: white;
-            border: none;
-            border-radius: 60px;
-            padding: 18px 30px;
-            width: 100%;
-            font-size: 20px;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            cursor: pointer;
-            transition: all 0.3s;
-            border: 2px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .download-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
-            background: #000;
-        }
-        
-        .download-btn i {
-            font-size: 24px;
-            animation: pulse 1.5s ease infinite;
-        }
-        
-        .download-count {
-            text-align: center;
-            margin-top: 15px;
-            font-size: 14px;
-            font-weight: 500;
-            color: rgba(9, 9, 11, 0.8);
-        }
-        
-        .never-show {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            margin-top: 15px;
-            font-size: 13px;
-            cursor: pointer;
-            opacity: 0.7;
-            transition: opacity 0.3s;
-        }
-        
-        .never-show:hover {
-            opacity: 1;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        
-        @keyframes slideDown {
-            from { transform: translateY(-100px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-        
-        @keyframes busBounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
     </style>
 </head>
 <body>
@@ -1162,7 +1021,7 @@
             <!-- पेज कंटेनर -->
             <div id="pageContainer"></div>
 
-            <!-- नीचे नेविऔगेशन -->
+            <!-- नीचे नेविगेशन -->
             <div class="bottom-nav">
                 <div class="nav-item active" data-page="home">
                     <i class="fas fa-home"></i>
@@ -1180,70 +1039,6 @@
                     <i class="fas fa-route"></i>
                     <span>रूट</span>
                 </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- ऐप डाउनलोड पॉपअप -->
-    <div class="app-popup-overlay" id="appPopup">
-        <div class="app-popup">
-            <div class="popup-close" onclick="closePopup()">
-                <i class="fas fa-times"></i>
-            </div>
-            
-            <div class="popup-icon">
-                <i class="fas fa-bus"></i>
-            </div>
-            
-            <div class="popup-title">
-                🚌 ON BUS
-            </div>
-            
-            <div class="popup-subtitle">
-                बस ट्रैकिंग ऐप अभी डाउनलोड करें
-            </div>
-            
-            <div class="popup-features">
-                <div class="feature-item">
-                    <i class="fas fa-map-marker-alt"></i>
-                    <span>लाइव ट्रैकिंग</span>
-                </div>
-                <div class="feature-item">
-                    <i class="fas fa-clock"></i>
-                    <span>सटीक समय</span>
-                </div>
-                <div class="feature-item">
-                    <i class="fas fa-chair"></i>
-                    <span>सीट उपलब्धता</span>
-                </div>
-                <div class="feature-item">
-                    <i class="fas fa-heart"></i>
-                    <span>पसंदीदा बसें</span>
-                </div>
-                <div class="feature-item">
-                    <i class="fas fa-route"></i>
-                    <span>रूट खोज</span>
-                </div>
-                <div class="feature-item">
-                    <i class="fas fa-shield-alt"></i>
-                    <span>100% सुरक्षित</span>
-                </div>
-            </div>
-            
-            <!-- डाउनलोड बटन -->
-            <button class="download-btn" onclick="downloadApp(true)">
-                <i class="fas fa-download"></i>
-                ऐप डाउनलोड करें
-                <span style="font-size: 14px; opacity: 0.8;">(APK)</span>
-            </button>
-            
-            <div class="download-count" id="downloadCount">
-                <i class="fas fa-users"></i> <span id="count">1,234</span>+ डाउनलोड
-            </div>
-            
-            <div class="never-show" onclick="neverShowAgain()">
-                <i class="far fa-check-circle"></i>
-                <span>फिर से न दिखाएं</span>
             </div>
         </div>
     </div>
@@ -1277,10 +1072,6 @@
         // ==================== थीम टॉगल ====================
         let isDark = localStorage.getItem('theme') === 'dark';
         if (isDark) document.body.classList.add('dark-theme');
-
-        // ==================== डाउनलोड स्टेटस ====================
-        let appDownloaded = localStorage.getItem('appDownloaded') === 'true';
-        let hidePopup = localStorage.getItem('hidePopup') === 'true';
 
         // ==================== PWA इंस्टॉल ====================
         let deferredPrompt;
@@ -1431,27 +1222,7 @@
         const settingsBody = document.getElementById('settingsBody');
 
         function renderSettings() {
-            let downloadItemHtml = '';
-            if (appDownloaded) {
-                downloadItemHtml = `
-                    <div class="settings-item" style="opacity:0.7; cursor:default;">
-                        <i class="fas fa-check-circle" style="color:var(--success);"></i>
-                        <span class="settings-text">ऐप डाउनलोड हो चुका है</span>
-                        <span class="settings-badge">✅</span>
-                    </div>
-                `;
-            } else {
-                downloadItemHtml = `
-                    <div class="settings-item" id="settingsDownloadApp">
-                        <i class="fas fa-download"></i>
-                        <span class="settings-text">ऐप डाउनलोड करें</span>
-                        <span class="settings-badge">APK</span>
-                    </div>
-                `;
-            }
-
             settingsBody.innerHTML = `
-                ${downloadItemHtml}
                 <div class="settings-item" id="settingsNotifications">
                     <i class="fas fa-bell"></i>
                     <span class="settings-text">नोटिफिकेशन</span>
@@ -1478,19 +1249,18 @@
                 </div>
             `;
 
-            // Attach event listeners
-            if (!appDownloaded) {
-                document.getElementById('settingsDownloadApp').addEventListener('click', () => {
-                    downloadApp(false);
-                });
+            // सभी सेटिंग आइटम्स पर क्लिक करने पर डाउनलोड प्रॉम्प्ट
+            document.getElementById('settingsNotifications').addEventListener('click', showDownloadPrompt);
+            document.getElementById('settingsLanguage').addEventListener('click', showDownloadPrompt);
+            document.getElementById('settingsAbout').addEventListener('click', showDownloadPrompt);
+            document.getElementById('settingsPrivacy').addEventListener('click', showDownloadPrompt);
+            document.getElementById('settingsSupport').addEventListener('click', showDownloadPrompt);
+        }
+
+        function showDownloadPrompt() {
+            if (confirm('यह सुविधा ऐप में उपलब्ध है। क्या आप ऐप डाउनलोड करना चाहेंगे?')) {
+                downloadApp();
             }
-            document.getElementById('settingsNotifications').addEventListener('click', () => alert('माफ़ करें यह सुविधा जल्द ही उपलब्ध होगी'));
-            document.getElementById('settingsLanguage').addEventListener('click', () => alert('भाषा विकल्प जल्द ही उपलब्ध होगा। अभी केवल हिन्दी उपलब्ध है।'));
-            document.getElementById('settingsAbout').addEventListener('click', () => alert('OB बस ट्रैकर\nवर्शन 1.2.0\n© 2025'));
-            document.getElementById('settingsPrivacy').addEventListener('click', () => alert('माफ़ करें यह सुविधा जल्द ही उपलब्ध होगी'));
-            document.getElementById('settingsSupport').addEventListener('click', () => {
-                window.location.href = 'mailto:supportonbus@gmail.com?subject=OB ऐप सहायता';
-            });
         }
 
         closeSettings.addEventListener('click', () => settingsModal.classList.remove('show'));
@@ -1606,7 +1376,7 @@
             container.innerHTML = `
                 <div class="hero-section">
                     <div class="hero-top">
-                        <div class="badge">
+                        <div class="badge">                          
                             <span class="badge-dot"></span>
                             <span class="badge-text">100% सटीक लाइव ट्रैकिंग</span>
                         </div>
@@ -1620,7 +1390,11 @@
                         </div>
                     </div>
 
-                    <div class="logo">OB</div>
+                    <!-- डाउनलोड बटन - सबसे ऊपर और बस खोजें बटन जितना बड़ा -->
+                    <button class="download-header-btn" onclick="downloadApp()">
+                        <i class="fas fa-download"></i> ऐप डाउनलोड करें
+                    </button>
+                    <div class="logo">Oh my bus</div>
 
                     <div class="hero-title">
                         आपकी यात्रा, <span class="highlight">हमारी जिम्मेदारी</span>
@@ -1672,19 +1446,19 @@
                 </div>
 
                 <div class="features-grid">
-                    <div class="feature-box" onclick="featureNotAvailable()">
+                    <div class="feature-box" onclick="showDownloadPrompt()">
                         <i class="fas fa-clock"></i>
                         <span>सही समय</span>
                     </div>
-                    <div class="feature-box" onclick="featureNotAvailable()">
+                    <div class="feature-box" onclick="showDownloadPrompt()">
                         <i class="fas fa-shield-alt"></i>
                         <span>सुरक्षित यात्री</span>
                     </div>
-                    <div class="feature-box" onclick="featureNotAvailable()">
+                    <div class="feature-box" onclick="showDownloadPrompt()">
                         <i class="fas fa-map-marked-alt"></i>
                         <span>लाइव ट्रैकिंग</span>
                     </div>
-                    <div class="feature-box" onclick="featureNotAvailable()">
+                    <div class="feature-box" onclick="showDownloadPrompt()">
                         <i class="fas fa-bell"></i>
                         <span>अलर्ट</span>
                     </div>
@@ -1743,10 +1517,6 @@
             renderBusResults(from, to, sorted);
             currentPage = 'busResults';
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-        };
-
-        window.featureNotAvailable = function() {
-            alert('माफ़ करें यह सुविधा जल्द ही उपलब्ध होगी');
         };
 
         function updateStationTexts() {
@@ -1917,8 +1687,8 @@
                             ` : ''}
                             <div class="action-buttons">
                                 <div class="action-btn share-btn" onclick="event.stopPropagation(); shareBus('${busId}')"><i class="fas fa-share-alt"></i></div>
-                                <div class="action-btn ticket-btn" onclick="event.stopPropagation(); alert('यह सुविधा जल्द ही उपलब्ध होगी।')"><i class="fas fa-ticket-alt"></i> टिकट बुक करें</div>
-                                <div class="action-btn track-btn" onclick="event.stopPropagation(); alert('यह सुविधा जल्द ही उपलब्ध होगी।')"><i class="fas fa-map-marker-alt"></i> लाइव ट्रैक</div>
+                                <div class="action-btn ticket-btn" onclick="event.stopPropagation(); showDownloadPrompt()"><i class="fas fa-ticket-alt"></i> टिकट बुक करें</div>
+                                <div class="action-btn track-btn" onclick="event.stopPropagation(); showDownloadPrompt()"><i class="fas fa-map-marker-alt"></i> लाइव ट्रैक</div>
                             </div>
                         </div>
                     </div>
@@ -1967,9 +1737,9 @@
         window.shareBus = function(busId) {
             const bus = buses[busId];
             if (!bus) return;
-            const shareText = `🚌 बस: ${bus.busName} (${bus.busNumber})\nरूट: ${getStationName(bus.fromStation)} → ${getStationName(bus.toStation)}\nकिराया: ${bus.fare}\nOB ऐप पर देखें: ${window.location.href}`;
+            const shareText = `🚌 बस: ${bus.busName} (${bus.busNumber})\nरूट: ${getStationName(bus.fromStation)} → ${getStationName(bus.toStation)}\nकिराया: ${bus.fare}\nOh my bus ऐप पर देखें: ${window.location.href}`;
             if (navigator.share) {
-                navigator.share({ title: 'OB बस ट्रैकर', text: shareText, url: window.location.href });
+                navigator.share({ title: 'Oh my bus ट्रैकर', text: shareText, url: window.location.href });
             } else {
                 navigator.clipboard.writeText(shareText);
                 alert('जानकारी कॉपी हो गई!');
@@ -2086,51 +1856,17 @@
                     nameHindi: s.nameHindi || s.name 
                 }));
                 renderHome();
-                // पॉपअप दिखाने की कोशिश करें (अगर डाउनलोड नहीं हुआ और हाइड नहीं किया गया)
-                tryShowPopup();
             }).catch(console.error);
         }
 
-        // ==================== ऐप डाउनलोड पॉपअप ====================
-        
-        // यहां आपकी GitHub रिलीज़ का लिंक
+        // ==================== ऐप डाउनलोड फंक्शन ====================
         const APK_URL = 'https://github.com/onbustraking/On-bus-/releases/download/v1.0/app-release.1.apk';
-        
-        // डाउनलोड काउंट
-        let downloadCount = localStorage.getItem('downloadCount') ? 
-                           parseInt(localStorage.getItem('downloadCount')) : 1234;
-        
-        function tryShowPopup() {
-            // पॉपअप तभी दिखाएं जब डाउनलोड नहीं हुआ और हाइड नहीं किया गया
-            if (!appDownloaded && !hidePopup) {
-                document.getElementById('appPopup').style.display = 'flex';
-            }
-        }
-        
-        // वेबसाइट लोड होने के बाद पॉपअप दिखाने की कोशिश करें
-        document.addEventListener('DOMContentLoaded', function() {
-            setTimeout(() => {
-                tryShowPopup();
-                updateDownloadCount();
-            }, 2000);
-        });
-        
-        // पॉपअप बंद करें
-        window.closePopup = function() {
-            document.getElementById('appPopup').style.display = 'none';
-        };
-        
-        // ऐप डाउनलोड करें (fromPopup: true अगर पॉपअप से बुलाया गया)
-        window.downloadApp = function(fromPopup = false) {
+        let downloadCount = localStorage.getItem('downloadCount') ? parseInt(localStorage.getItem('downloadCount')) : 1234;
+
+        window.downloadApp = function() {
             downloadCount++;
             localStorage.setItem('downloadCount', downloadCount);
-            updateDownloadCount();
             
-            // डाउनलोड स्टेटस सेट करें
-            appDownloaded = true;
-            localStorage.setItem('appDownloaded', 'true');
-            
-            // Google Analytics ईवेंट भेजें
             gtag('event', 'download', {
                 'event_category': 'app',
                 'event_label': 'on-bus-apk',
@@ -2143,85 +1879,13 @@
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
-            
-            // पॉपअप बंद करें
-            closePopup();
-            
-            // सेटिंग मोडल अपडेट करें (अगर खुला है)
-            if (settingsModal.classList.contains('show')) {
-                renderSettings();
-            }
-            
-            // बटन का टेक्स्ट बदलें (अगर पॉपअप से है)
-            if (fromPopup) {
-                const btn = event.currentTarget;
-                btn.innerHTML = '<i class="fas fa-check"></i> डाउनलोड शुरू!';
-                btn.style.background = '#22C55E';
-                setTimeout(() => {
-                    btn.innerHTML = '<i class="fas fa-download"></i> ऐप डाउनलोड करें <span style="font-size: 14px; opacity: 0.8;">(APK)</span>';
-                    btn.style.background = '#09090B';
-                }, 2000);
+        };
+
+        window.showDownloadPrompt = function() {
+            if (confirm('यह सुविधा ऐप में उपलब्ध है। क्या आप ऐप डाउनलोड करना चाहेंगे?')) {
+                downloadApp();
             }
         };
-        
-        // डाउनलोड काउंट अपडेट करें
-        function updateDownloadCount() {
-            const countElement = document.getElementById('count');
-            if (countElement) {
-                countElement.textContent = downloadCount.toLocaleString();
-            }
-        }
-        
-        // फिर से न दिखाएं
-        window.neverShowAgain = function() {
-            hidePopup = true;
-            localStorage.setItem('hidePopup', 'true');
-            closePopup();
-            
-            // Google Analytics ईवेंट भेजें
-            gtag('event', 'popup_closed', {
-                'event_category': 'app',
-                'event_label': 'never_show_again'
-            });
-            
-            showToast('आप इसे सेटिंग से फिर से चालू नहीं कर सकते');
-        };
-        
-        function showToast(message) {
-            const toast = document.createElement('div');
-            toast.style.cssText = `
-                position: fixed;
-                bottom: 30px;
-                left: 50%;
-                transform: translateX(-50%);
-                background: #09090B;
-                color: white;
-                padding: 12px 24px;
-                border-radius: 50px;
-                font-size: 14px;
-                z-index: 10000;
-                box-shadow: 0 5px 20px rgba(0,0,0,0.3);
-                animation: fadeIn 0.3s ease;
-            `;
-            toast.textContent = message;
-            document.body.appendChild(toast);
-            
-            setTimeout(() => {
-                toast.remove();
-            }, 3000);
-        }
-        
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                closePopup();
-            }
-        });
-        
-        document.getElementById('appPopup').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closePopup();
-            }
-        });
 
         // ==================== इनिशियलाइज़ ====================
         loadFirebaseData();

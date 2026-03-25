@@ -955,35 +955,14 @@
             color: var(--text);
             font-size: 15px;
             outline: none;
-            margin-bottom: 12px;
+            margin-bottom: 0; /* No button, so no margin needed */
         }
 
         .bus-search-input:focus {
             border-color: var(--primary);
         }
 
-        .bus-search-btn {
-            background: linear-gradient(135deg, #FF9F1A, #E8860D);
-            border: none;
-            border-radius: 16px;
-            padding: 14px;
-            width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            cursor: pointer;
-            transition: all 0.3s;
-            color: #09090B;
-            font-weight: 600;
-            font-size: 15px;
-        }
-
-        .bus-search-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 16px rgba(255, 159, 26, 0.3);
-        }
-
+        /* Removed .bus-search-btn styles as button is removed */
     </style>
 </head>
 <body>
@@ -1220,13 +1199,24 @@
             return `${fromStop} और ${toStop} के बीच`;
         }
 
-        // ==================== पसंदीदा फंक्शन ====================
-        function toggleFavorite(busId) {
+        // ==================== पसंदीदा फंक्शन (UPDATE: Direct UI Update) ====================
+        function toggleFavorite(busId, el) {
             const idx = favorites.indexOf(busId);
-            if (idx === -1) favorites.push(busId);
-            else favorites.splice(idx, 1);
+            if (idx === -1) {
+                favorites.push(busId);
+                el.classList.replace('far', 'fas');
+                el.style.color = '#EF4444'; // Red
+            } else {
+                favorites.splice(idx, 1);
+                el.classList.replace('fas', 'far');
+                el.style.color = '#94A3B8'; // Muted Gray
+            }
             localStorage.setItem('favorites', JSON.stringify(favorites));
-            if (currentPage === 'favorites') renderFavorites();
+            
+            // If we are on the favorites page, we should refresh to remove the item
+            if (currentPage === 'favorites') {
+                setTimeout(renderFavorites, 300); // Small delay for visual feedback
+            }
         }
 
         function isFavorite(busId) {
@@ -1331,8 +1321,9 @@
             const fromName = getStationName(bus.fromStation);
             const toName = getStationName(bus.toStation);
             const route = routes[bus.routeId];
+            const isFav = isFavorite(id);
             const favIcon = showFavoriteIcon ? 
-                `<i class="${isFavorite(id) ? 'fas' : 'far'} fa-heart" style="color: #EF4444; font-size: 18px; cursor: pointer;" onclick="event.stopPropagation(); toggleFavorite('${id}')"></i>` : '';
+                `<i class="${isFav ? 'fas' : 'far'} fa-heart" style="color: ${isFav ? '#EF4444' : '#94A3B8'}; font-size: 18px; cursor: pointer;" onclick="event.stopPropagation(); toggleFavorite('${id}', this)"></i>` : '';
             
             let tripsHtml = '';
             if (bus.trips && bus.trips.length) {
@@ -1599,7 +1590,7 @@
             }
         }
 
-        // ==================== बसें पेज ====================
+        // ==================== बसें पेज (modified: no search button, auto-search on input) ====================
         function renderBusesPage(initialResults = null) {
             const container = document.getElementById('pageContainer');
             container.innerHTML = `
@@ -1608,35 +1599,40 @@
                         <i class="fas fa-bus"></i>
                         <h3>बस खोजें</h3>
                     </div>
-                    <input type="text" class="bus-search-input" id="busSearchInput" placeholder="बस नाम या नंबर...">
-                    <button class="bus-search-btn" id="busSearchBtn">
-                        <i class="fas fa-search"></i> सर्च करें
-                    </button>
+                    <input type="text" class="bus-search-input" id="busSearchInput" placeholder="बस नाम या नंबर..." autocomplete="off">
                 </div>
                 <div id="busesContainer"></div>
             `;
 
             const busesContainer = document.getElementById('busesContainer');
+            const searchInput = document.getElementById('busSearchInput');
 
-            if (initialResults && initialResults.length > 0) {
-                busesContainer.innerHTML = initialResults.map(([id, bus]) => renderBusCard(id, bus)).join('');
-            } else {
-                busesContainer.innerHTML = '<div class="empty-state"><i class="fas fa-bus"></i><p>बसें खोजने के लिए ऊपर सर्च करें</p></div>';
-            }
-
-            document.getElementById('busSearchBtn').addEventListener('click', () => {
-                const term = document.getElementById('busSearchInput').value.trim();
+            // Function to perform search and update UI
+            const performSearch = () => {
+                const term = searchInput.value.trim();
                 if (!term) {
-                    busesContainer.innerHTML = '<div class="empty-state"><i class="fas fa-bus"></i><p>बसें खोजने के लिए ऊपर सर्च करें</p></div>';
+                    busesContainer.innerHTML = '<div class="empty-state"><i class="fas fa-bus"></i><p>बस नाम या नंबर डालें</p></div>';
                     return;
                 }
                 const results = searchBusesByNameOrNumber(term);
-                busesContainer.innerHTML = results.map(([id, bus]) => renderBusCard(id, bus)).join('');
-            });
+                if (results.length === 0) {
+                    busesContainer.innerHTML = '<div class="empty-state"><i class="fas fa-bus"></i><p>कोई बस नहीं मिली</p></div>';
+                } else {
+                    busesContainer.innerHTML = results.map(([id, bus]) => renderBusCard(id, bus)).join('');
+                }
+            };
 
-            document.getElementById('busSearchInput').addEventListener('keyup', (e) => {
-                if (e.key === 'Enter') document.getElementById('busSearchBtn').click();
-            });
+            // Attach input event listener (auto-search)
+            searchInput.addEventListener('input', performSearch);
+
+            // If initialResults is provided (though not used in current flow, but we keep consistency)
+            if (initialResults && initialResults.length > 0) {
+                // This case might not happen because renderBusesPage is called without params normally.
+                // We'll just update input value? Not needed.
+            } else {
+                // Show placeholder empty state
+                busesContainer.innerHTML = '<div class="empty-state"><i class="fas fa-bus"></i><p>बस नाम या नंबर डालें</p></div>';
+            }
         }
 
         // ==================== पसंदीदा पेज ====================

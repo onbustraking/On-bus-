@@ -112,14 +112,16 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 30px;
-            flex-wrap: wrap;
-            gap: 10px;
+            flex-wrap: nowrap;
+            gap: 12px;
+            overflow-x: auto;
         }
 
         .hero-actions {
             display: flex;
             gap: 12px;
             align-items: center;
+            flex-shrink: 0;
         }
 
         .badge {
@@ -130,8 +132,8 @@
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            width: 100%;
-            justify-content: center;
+            white-space: nowrap;
+            width: auto;
         }
 
         .badge-dot {
@@ -167,6 +169,7 @@
             transition: all 0.3s;
             color: var(--primary);
             font-size: 20px;
+            flex-shrink: 0;
         }
 
         .download-header-btn {
@@ -289,6 +292,11 @@
 
         .station-text.placeholder {
             color: var(--text-muted);
+        }
+
+        /* No chevron icon */
+        .station-row i.fa-chevron-down {
+            display: none;
         }
 
         .divider-row {
@@ -1063,9 +1071,56 @@
         let buses = {};
         let favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
         let currentPage = 'home';
-        let previousPage = null;
-        let fromId = 'barmer_stand';
-        let toId = 'chouhtan_stand';
+        
+        // --- बैक बटन अपडेट: नेविगेशन स्टैक ---
+        let navigationStack = [{ page: 'home' }];
+
+        // नेविगेट करने के लिए हेल्पर फंक्शन
+        function navigateTo(page, params = {}) {
+            navigationStack.push({ page, params });
+            currentPage = page;
+            window.history.pushState({ stackIndex: navigationStack.length - 1 }, "");
+            renderPageByState(page, params);
+            updateNavActive(page);
+        }
+
+        function renderPageByState(page, params) {
+            if (page === 'home') renderHome();
+            else if (page === 'buses') renderBusesPage();
+            else if (page === 'favorites') renderFavorites();
+            else if (page === 'routes') renderRoutes();
+            else if (page === 'busResults') renderBusResults(params.fromId, params.toId, params.results);
+            else if (page === 'busDetail') internalShowBusDetail(params.busId, params.tripId);
+        }
+
+        window.goBack = function() {
+            if (navigationStack.length > 1) {
+                navigationStack.pop();
+                const lastState = navigationStack[navigationStack.length - 1];
+                currentPage = lastState.page;
+                renderPageByState(lastState.page, lastState.params);
+                updateNavActive(lastState.page);
+            } else {
+                currentPage = 'home';
+                renderHome();
+                updateNavActive('home');
+            }
+        };
+
+        window.addEventListener('popstate', function(event) {
+            goBack();
+        });
+
+        function updateNavActive(page) {
+            document.querySelectorAll('.nav-item').forEach(n => {
+                if (n.dataset.page === page) n.classList.add('active');
+                else n.classList.remove('active');
+            });
+        }
+
+        // स्टेशन चयन - localStorage से प्रारंभिक मान लें या प्लेसहोल्डर
+        let fromId = localStorage.getItem('lastFromId') || null;
+        let toId = localStorage.getItem('lastToId') || null;
         let pickerMode = 'from';
         let allStationsList = [];
 
@@ -1096,6 +1151,7 @@
 
         // ==================== कॉमन फंक्शन ====================
         function getStationName(id) {
+            if (!id) return '';
             return stations[id]?.nameHindi || stations[id]?.name || id;
         }
 
@@ -1200,6 +1256,9 @@
                 item.addEventListener('click', () => {
                     if (pickerMode === 'from') fromId = id;
                     else toId = id;
+                    // स्टेशन चुनने पर localStorage में सेव करें
+                    if (fromId) localStorage.setItem('lastFromId', fromId);
+                    if (toId) localStorage.setItem('lastToId', toId);
                     updateStationTexts();
                     pickerModal.classList.remove('show');
                 });
@@ -1249,7 +1308,6 @@
                 </div>
             `;
 
-            // सभी सेटिंग आइटम्स पर क्लिक करने पर डाउनलोड प्रॉम्प्ट
             document.getElementById('settingsNotifications').addEventListener('click', showDownloadPrompt);
             document.getElementById('settingsLanguage').addEventListener('click', showDownloadPrompt);
             document.getElementById('settingsAbout').addEventListener('click', showDownloadPrompt);
@@ -1373,6 +1431,9 @@
         // ==================== होम पेज ====================
         function renderHome() {
             const container = document.getElementById('pageContainer');
+            // प्लेसहोल्डर टेक्स्ट
+            const fromText = fromId ? getStationName(fromId) : "कहाँ से...";
+            const toText = toId ? getStationName(toId) : "कहाँ तक...";
             container.innerHTML = `
                 <div class="hero-section">
                     <div class="hero-top">
@@ -1390,7 +1451,6 @@
                         </div>
                     </div>
 
-                    <!-- डाउनलोड बटन - सबसे ऊपर और बस खोजें बटन जितना बड़ा -->
                     <button class="download-header-btn" onclick="downloadApp()">
                         <i class="fas fa-download"></i> ऐप डाउनलोड करें
                     </button>
@@ -1409,8 +1469,8 @@
 
                     <div class="station-row" id="fromStation">
                         <div class="station-dot start"></div>
-                        <span class="station-text" id="fromText">${getStationName(fromId)}</span>
-                        <i class="fas fa-chevron-down" style="color: var(--text-muted);"></i>
+                        <span class="station-text ${!fromId ? 'placeholder' : ''}" id="fromText">${fromText}</span>
+                        <!-- chevron removed -->
                     </div>
 
                     <div class="divider-row">
@@ -1423,8 +1483,8 @@
 
                     <div class="station-row" id="toStation">
                         <div class="station-dot end"></div>
-                        <span class="station-text" id="toText">${getStationName(toId)}</span>
-                        <i class="fas fa-chevron-down" style="color: var(--text-muted);"></i>
+                        <span class="station-text ${!toId ? 'placeholder' : ''}" id="toText">${toText}</span>
+                        <!-- chevron removed -->
                     </div>
 
                     <button class="search-btn" id="homeSearchBtn">
@@ -1497,33 +1557,46 @@
                 const temp = fromId;
                 fromId = toId;
                 toId = temp;
-                document.getElementById('fromText').textContent = getStationName(fromId);
-                document.getElementById('toText').textContent = getStationName(toId);
+                updateStationTexts();
+                // स्वैप करने पर localStorage में सेव करें
+                if (fromId) localStorage.setItem('lastFromId', fromId);
+                if (toId) localStorage.setItem('lastToId', toId);
             });
 
             document.getElementById('homeSearchBtn').addEventListener('click', () => {
+                if (!fromId || !toId) {
+                    alert('कृपया पहले स्टेशन चुनें');
+                    return;
+                }
                 const results = searchBuses(fromId, toId);
                 const sorted = sortBusesByTime(results);
-                renderBusResults(fromId, toId, sorted);
-                currentPage = 'busResults';
+                navigateTo('busResults', { fromId, toId, results: sorted });
             });
         }
 
         window.handleSuggestionRoute = function(from, to) {
             fromId = from;
             toId = to;
+            localStorage.setItem('lastFromId', fromId);
+            localStorage.setItem('lastToId', toId);
             const results = searchBuses(from, to);
             const sorted = sortBusesByTime(results);
-            renderBusResults(from, to, sorted);
-            currentPage = 'busResults';
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            navigateTo('busResults', { fromId: from, toId: to, results: sorted });
         };
 
         function updateStationTexts() {
             const fromEl = document.getElementById('fromText');
             const toEl = document.getElementById('toText');
-            if (fromEl) fromEl.textContent = getStationName(fromId);
-            if (toEl) toEl.textContent = getStationName(toId);
+            if (fromEl) {
+                fromEl.textContent = fromId ? getStationName(fromId) : "कहाँ से...";
+                if (!fromId) fromEl.classList.add('placeholder');
+                else fromEl.classList.remove('placeholder');
+            }
+            if (toEl) {
+                toEl.textContent = toId ? getStationName(toId) : "कहाँ तक...";
+                if (!toId) toEl.classList.add('placeholder');
+                else toEl.classList.remove('placeholder');
+            }
         }
 
         // ==================== बसें पेज ====================
@@ -1627,20 +1700,23 @@
         window.handleRouteClick = function(from, to) {
             fromId = from;
             toId = to;
+            localStorage.setItem('lastFromId', fromId);
+            localStorage.setItem('lastToId', toId);
             const results = searchBuses(from, to);
             const sorted = sortBusesByTime(results);
-            renderBusResults(from, to, sorted);
-            currentPage = 'busResults';
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            navigateTo('busResults', { fromId: from, toId: to, results: sorted });
         };
 
         // ==================== बस विवरण ====================
         window.showBusDetail = function(busId, tripId) {
+            navigateTo('busDetail', { busId, tripId });
+        };
+
+        function internalShowBusDetail(busId, tripId) {
             const bus = buses[busId];
             if (!bus) return;
             const route = routes[bus.routeId];
-            
-            previousPage = currentPage;
+            const container = document.getElementById('pageContainer');
             
             if (tripId) {
                 const trip = bus.trips.find(t => t.id === tripId);
@@ -1650,7 +1726,6 @@
                 const location = getCurrentLocation(trip, route);
                 const stops = getStopsForTrip(trip, route);
 
-                const container = document.getElementById('pageContainer');
                 container.innerHTML = `
                     <div style="padding:16px;">
                         <button onclick="goBack()" style="background:none; border:none; color:var(--primary); margin-bottom:16px;"><i class="fas fa-arrow-left"></i> वापस</button>
@@ -1693,7 +1768,6 @@
                         </div>
                     </div>
                 `;
-                currentPage = 'busDetail';
             } else {
                 let tripsHtml = '';
                 if (bus.trips && bus.trips.length) {
@@ -1722,7 +1796,6 @@
                     }).join('');
                 }
 
-                const container = document.getElementById('pageContainer');
                 container.innerHTML = `
                     <div style="padding:16px;">
                         <button onclick="goBack()" style="background:none; border:none; color:var(--primary); margin-bottom:16px;"><i class="fas fa-arrow-left"></i> वापस</button>
@@ -1730,9 +1803,8 @@
                         ${tripsHtml}
                     </div>
                 `;
-                currentPage = 'busDetail';
             }
-        };
+        }
 
         window.shareBus = function(busId) {
             const bus = buses[busId];
@@ -1798,47 +1870,15 @@
             resultsContainer.innerHTML = results.map(([id, bus]) => renderBusCard(id, bus)).join('');
         }
 
-        // ==================== नेविगेशन ====================
+        // ==================== नेविगेशन इवेन्ट्स ====================
         document.querySelectorAll('.nav-item').forEach(item => {
             item.addEventListener('click', (e) => {
                 e.preventDefault();
-                document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-                item.classList.add('active');
                 const page = item.dataset.page;
-                previousPage = currentPage;
-                currentPage = page;
-                renderPage(page);
+                if (page === currentPage && navigationStack.length === 1) return;
+                navigateTo(page);
             });
         });
-
-        function renderPage(page) {
-            if (page === 'home') renderHome();
-            else if (page === 'buses') renderBusesPage();
-            else if (page === 'favorites') renderFavorites();
-            else if (page === 'routes') renderRoutes();
-        }
-
-        window.goBack = function() {
-            if (previousPage) {
-                const temp = currentPage;
-                currentPage = previousPage;
-                previousPage = temp;
-                renderPage(currentPage);
-                document.querySelectorAll('.nav-item').forEach(n => {
-                    if (n.dataset.page === currentPage) {
-                        n.classList.add('active');
-                    } else {
-                        n.classList.remove('active');
-                    }
-                });
-            } else {
-                currentPage = 'home';
-                previousPage = null;
-                renderHome();
-                document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-                document.querySelector('[data-page="home"]').classList.add('active');
-            }
-        };
 
         // ==================== फायरबेस डेटा लोड ====================
         function loadFirebaseData() {
@@ -1855,24 +1895,18 @@
                     name: s.name,
                     nameHindi: s.nameHindi || s.name 
                 }));
+                
+                window.history.replaceState({ stackIndex: 0 }, "");
                 renderHome();
             }).catch(console.error);
         }
 
-        // ==================== ऐप डाउनलोड फंक्शन ====================
         const APK_URL = 'https://github.com/onbustraking/On-bus-/releases/download/v1.0/app-release.1.apk';
-        let downloadCount = localStorage.getItem('downloadCount') ? parseInt(localStorage.getItem('downloadCount')) : 1234;
-
         window.downloadApp = function() {
+            let downloadCount = localStorage.getItem('downloadCount') ? parseInt(localStorage.getItem('downloadCount')) : 1234;
             downloadCount++;
             localStorage.setItem('downloadCount', downloadCount);
-            
-            gtag('event', 'download', {
-                'event_category': 'app',
-                'event_label': 'on-bus-apk',
-                'value': downloadCount
-            });
-            
+            gtag('event', 'download', { 'event_category': 'app', 'event_label': 'on-bus-apk', 'value': downloadCount });
             const link = document.createElement('a');
             link.href = APK_URL;
             link.download = 'on-bus-app.apk';
@@ -1881,30 +1915,7 @@
             document.body.removeChild(link);
         };
 
-        window.showDownloadPrompt = function() {
-            if (confirm('यह सुविधा ऐप में उपलब्ध है। क्या आप ऐप डाउनलोड करना चाहेंगे?')) {
-                downloadApp();
-            }
-        };
-
-        // ==================== इनिशियलाइज़ ====================
         loadFirebaseData();
-
-        // ग्लोबल में जोड़ें
-        window.renderBusResults = renderBusResults;
-        window.updateStationTexts = updateStationTexts;
     </script>
-
-    <!-- फॉलबैक डाउनलोड लिंक -->
-    <noscript>
-        <div style="position: fixed; bottom: 20px; left: 20px; right: 20px; background: #FF9F1A; color: #09090B; padding: 15px; border-radius: 60px; text-align: center; z-index: 9999;">
-            <a href="https://github.com/onbustraking/On-bus-/releases/download/v1.0/app-release.1.apk" 
-               target="_blank" 
-               rel="noopener noreferrer"
-               style="color: #09090B; text-decoration: none; font-weight: bold; display: block;">
-                <i class="fas fa-bus"></i> 📲 ON BUS ऐप डाउनलोड करें
-            </a>
-        </div>
-    </noscript>
 </body>
 </html>

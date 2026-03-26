@@ -444,6 +444,33 @@
             color: var(--primary);
         }
 
+        /* Amenities styles */
+        .bus-amenities {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 12px 0;
+            padding: 8px 0;
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .amenity-tag {
+            background: var(--surface2);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            color: var(--text-secondary);
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .amenity-tag i {
+            color: var(--primary);
+            font-size: 12px;
+        }
+
         .bus-details {
             display: flex;
             align-items: center;
@@ -1316,6 +1343,22 @@
             if (e.target === settingsModal) settingsModal.classList.remove('show');
         });
 
+        // ==================== Amenities rendering helper ====================
+        function renderAmenities(bus) {
+            let amenities = [];
+            if (bus.amenities) {
+                if (bus.amenities.ac) amenities.push('<span class="amenity-tag"><i class="fas fa-wind"></i> AC</span>');
+                if (bus.amenities.sleeper) amenities.push('<span class="amenity-tag"><i class="fas fa-bed"></i> स्लीपर</span>');
+                if (bus.amenities.wifi) amenities.push('<span class="amenity-tag"><i class="fas fa-wifi"></i> WiFi</span>');
+                if (bus.amenities.charging) amenities.push('<span class="amenity-tag"><i class="fas fa-bolt"></i> चार्जिंग</span>');
+                if (bus.amenities.water) amenities.push('<span class="amenity-tag"><i class="fas fa-water"></i> पानी</span>');
+            }
+            if (amenities.length === 0) {
+                amenities.push('<span class="amenity-tag"><i class="fas fa-chair"></i> सीटर</span>');
+            }
+            return `<div class="bus-amenities">${amenities.join(' ')}</div>`;
+        }
+
         // ==================== रेंडर बस कार्ड ====================
         function renderBusCard(id, bus, showFavoriteIcon = true) {
             const fromName = getStationName(bus.fromStation);
@@ -1340,6 +1383,8 @@
                     `;
                 }).join('');
             }
+
+            const amenitiesHtml = renderAmenities(bus);
 
             return `
                 <div class="bus-card" onclick="showBusDetail('${id}')">
@@ -1368,6 +1413,8 @@
                             <div class="station-sub">${toName}</div>
                         </div>
                     </div>
+
+                    ${amenitiesHtml}
 
                     <div class="bus-details">
                         <div class="detail-item"><i class="fas fa-chair"></i> ${bus.availableSeats || 0}/${bus.totalSeats || 0}</div>
@@ -1713,6 +1760,7 @@
             if (!bus) return;
             const route = routes[bus.routeId];
             const container = document.getElementById('pageContainer');
+            const amenitiesHtml = renderAmenities(bus);
             
             if (tripId) {
                 const trip = bus.trips.find(t => t.id === tripId);
@@ -1796,6 +1844,7 @@
                     <div style="padding:16px;">
                         <button onclick="goBack()" style="background:none; border:none; color:var(--primary); margin-bottom:16px;"><i class="fas fa-arrow-left"></i> वापस</button>
                         <h3 style="margin-bottom:12px;">${bus.busName} (${bus.busNumber})</h3>
+                        ${amenitiesHtml}
                         ${tripsHtml}
                     </div>
                 `;
